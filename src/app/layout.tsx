@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { DM_Sans, Playfair_Display, Inter, Noto_Sans_Bengali } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { env } from '@/lib/env'
 import { DEFAULT_BRAND_LOGO_URL } from '@/lib/brand'
+import { NavigationProgress } from '@/components/navigation-progress'
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -78,6 +80,9 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${playfair.variable} ${inter.variable} ${notoSansBengali.variable} font-sans antialiased`}
       >
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         {children}
         <Toaster richColors position="top-right" />
       </body>

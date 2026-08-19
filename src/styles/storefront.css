@@ -504,3 +504,37 @@
     display: none;
   }
 }
+
+/* ─── Hero Wave Animation ────────────────────────────────────────────── */
+
+@keyframes sf-hero-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sf-hero-wave-loop {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.sf-hero-wave {
+  opacity: 0;
+  animation: 
+    sf-hero-fade-in 0.8s ease-out forwards,
+    sf-hero-wave-loop 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-hero-wave {
+    animation: none;
+    opacity: 1;
+  }
+}

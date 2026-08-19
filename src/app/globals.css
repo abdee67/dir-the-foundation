@@ -5,6 +5,12 @@
 @source "../../src";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@keyframes navigation-progress {
+  0% { transform: translateX(-110%); }
+  52% { transform: translateX(125%); }
+  100% { transform: translateX(260%); }
+}
+
 /**
  * Scarpar design tokens — shadcn-v4-compatible naming (standard shadcn component source
  * works against these variables unmodified). Canonical source of truth for every color,
