@@ -1,0 +1,277 @@
+/*
+ * DIR Operations — administrative interface system.
+ *
+ * This layer is deliberately scoped to `.admin-shell`. The storefront owns
+ * its own visual language; the back office is a calm, high-density work
+ * environment with a neutral paper workspace and a graphite navigation rail.
+ */
+
+.admin-shell {
+  --radius: 0.25rem;
+  --background: #f5f5f2;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary: #171717;
+  --primary-foreground: #ffffff;
+  --secondary: #ecece8;
+  --secondary-foreground: #171717;
+  --muted: #ecece8;
+  --muted-foreground: #666661;
+  --accent: #e9e9e5;
+  --accent-foreground: #171717;
+  --border: #dcdcd6;
+  --input: #cfcfc8;
+  --ring: #171717;
+  --sidebar: #151515;
+  --sidebar-foreground: #f7f7f4;
+  --sidebar-primary: #f7f7f4;
+  --sidebar-primary-foreground: #171717;
+  --sidebar-accent: #292927;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #30302d;
+  --sidebar-ring: #ffffff;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark .admin-shell {
+  --background: #121212;
+  --foreground: #f5f5f2;
+  --card: #1b1b1a;
+  --card-foreground: #f5f5f2;
+  --popover: #20201e;
+  --popover-foreground: #f5f5f2;
+  --primary: #f4f4ef;
+  --primary-foreground: #161616;
+  --secondary: #292927;
+  --secondary-foreground: #f5f5f2;
+  --muted: #292927;
+  --muted-foreground: #aaa9a3;
+  --accent: #2b2b29;
+  --accent-foreground: #f5f5f2;
+  --border: #393936;
+  --input: #484844;
+  --ring: #f4f4ef;
+  --sidebar: #0d0d0c;
+  --sidebar-foreground: #f5f5f2;
+  --sidebar-primary: #f5f5f2;
+  --sidebar-primary-foreground: #161616;
+  --sidebar-accent: #252523;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #30302d;
+  --sidebar-ring: #ffffff;
+}
+
+.admin-shell ::selection {
+  background: #d9d9d2;
+  color: #171717;
+}
+
+.dark .admin-shell ::selection {
+  background: #4a4a45;
+  color: #ffffff;
+}
+
+.admin-shell [data-slot='page-header'] {
+  min-height: 6.25rem;
+  align-items: end;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.5rem;
+}
+
+.admin-shell [data-slot='page-header'] h1 {
+  font-size: clamp(1.5rem, 1.15rem + 1vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.admin-shell [data-slot='page-header'] p {
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
+.admin-shell [data-slot='card'] {
+  border-radius: 0.25rem;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.admin-shell [data-slot='card-header'] {
+  padding: 1.25rem 1.25rem 0;
+}
+
+.admin-shell [data-slot='card-title'] {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-shell [data-slot='card-content'] {
+  padding: 1.25rem;
+}
+
+.admin-shell [data-slot='button'] {
+  border-radius: 0.1875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+}
+
+.admin-shell [data-slot='button'] {
+  min-height: 2.25rem;
+}
+
+.admin-shell [data-slot='button']:not([class*='bg-primary']) {
+  box-shadow: none;
+}
+
+.admin-shell [data-slot='button']:focus-visible,
+.admin-shell [data-slot='input']:focus-visible,
+.admin-shell [data-slot='textarea']:focus-visible,
+.admin-shell [data-slot='select-trigger']:focus-visible {
+  outline-offset: 2px;
+}
+
+.admin-shell [data-slot='input'],
+.admin-shell [data-slot='textarea'],
+.admin-shell [data-slot='select-trigger'] {
+  border-radius: 0.1875rem;
+  border-color: var(--input);
+  background-color: var(--card);
+  box-shadow: none;
+}
+
+.admin-shell [data-slot='input'],
+.admin-shell [data-slot='select-trigger'] {
+  min-height: 2.5rem;
+}
+
+.admin-shell [data-slot='textarea'] {
+  min-height: 6rem;
+}
+
+.admin-shell [data-slot='label'],
+.admin-shell [data-slot='form-label'] {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-shell [data-slot='form-description'],
+.admin-shell [data-slot='form-message'] {
+  font-size: 0.75rem;
+}
+
+.admin-shell [data-slot='badge'] {
+  border-radius: 0.1875rem;
+  padding: 0.1875rem 0.4375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-shell [data-slot='table-container'] {
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background: var(--card);
+}
+
+.admin-shell [data-slot='table'] {
+  font-size: 0.8125rem;
+}
+
+.admin-shell [data-slot='table-header'] {
+  background: color-mix(in oklab, var(--muted) 58%, transparent);
+}
+
+.admin-shell [data-slot='table-row'] {
+  height: 3rem;
+}
+
+.admin-shell [data-slot='table-row']:hover {
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+
+.admin-shell [data-slot='table-head'] {
+  height: 2.75rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.admin-shell [data-slot='table-cell'] {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.admin-shell [data-slot='tabs-list'] {
+  gap: 1.25rem;
+}
+
+.admin-shell [data-slot='tabs-trigger'] {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-shell [data-slot='dialog-content'] {
+  border-radius: 0.25rem;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 0.22);
+}
+
+.admin-shell [data-slot='empty-state'] {
+  border: 1px dashed var(--border);
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--card) 80%, transparent);
+  padding: 4rem 1.5rem;
+}
+
+.admin-shell [data-slot='empty-state'] > div:first-child {
+  border-radius: 0.25rem;
+}
+
+.admin-shell .admin-kicker {
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.admin-shell .admin-surface {
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background: var(--card);
+}
+
+.admin-shell .admin-section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-shell .admin-data-toolbar {
+  gap: 0.75rem;
+}
+
+@media (max-width: 639px) {
+  .admin-shell [data-slot='page-header'] {
+    min-height: auto;
+    padding-bottom: 1.25rem;
+  }
+
+  .admin-shell [data-slot='card-header'],
+  .admin-shell [data-slot='card-content'] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

@@ -1,0 +1,506 @@
+/*
+ * DIR (ድር) THE FOUNDATION — Storefront Design Tokens
+ * ──────────────────────────────────────────────────────
+ * Scoped under `.storefront` to prevent any admin-panel bleed.
+ * Uses CSS custom properties so every component can reference
+ * the same token set consistently.
+ *
+ * Aesthetic: black / white / warm-white / charcoal / one restrained accent.
+ * Shape: 0–6px radius, no pills, no shadows except overlays.
+ * Motion: subtle, 150–400ms, GPU-friendly (transform + opacity only).
+ */
+
+/* ─── Brand Color Tokens ─────────────────────────────────────────────── */
+
+.storefront {
+  --sf-black: #000000;
+  --sf-white: #ffffff;
+  --sf-warm-white: #faf9f7;
+  --sf-off-white: #f5f4f2;
+  --sf-charcoal: #1a1a1a;
+  --sf-muted: #737373;
+  --sf-muted-light: #a3a3a3;
+  --sf-border: #e5e5e5;
+  --sf-border-dark: #d4d4d4;
+  --sf-accent: #000000;
+  --sf-sale: #c0392b;
+  --sf-sale-bg: #fdf2f2;
+  --sf-overlay: rgba(0, 0, 0, 0.55);
+  --sf-overlay-light: rgba(0, 0, 0, 0.03);
+  --sf-surface: var(--sf-white);
+  --sf-bg: var(--sf-warm-white);
+
+  /* ─── Typography ──────────────────────────────────────────────────── */
+  --sf-font-primary: var(--font-primary), 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sf-font-display: var(--font-display), 'Playfair Display', 'Georgia', serif;
+
+  /* Hero display */
+  --sf-text-hero-desktop: clamp(3rem, 2.2rem + 2.5vw, 5.25rem);   /* ~48–84px */
+  --sf-text-hero-mobile: clamp(2rem, 1.5rem + 2vw, 2.75rem);      /* ~32–44px */
+
+  /* Section titles */
+  --sf-text-section-desktop: clamp(1.5rem, 1rem + 1.5vw, 2.625rem); /* ~24–42px */
+  --sf-text-section-mobile: clamp(1.375rem, 1rem + 1vw, 1.75rem);   /* ~22–28px */
+
+  /* Product card */
+  --sf-text-product-name: 0.8125rem;   /* 13px */
+  --sf-text-product-desc: 0.6875rem;   /* 11px */
+  --sf-text-product-price: 0.8125rem;  /* 13px */
+
+  /* Navigation */
+  --sf-text-nav: 0.75rem;             /* 12px */
+  --sf-text-nav-mobile: 0.875rem;     /* 14px */
+
+  /* Utility */
+  --sf-text-utility: 0.6875rem;       /* 11px */
+  --sf-text-body: 0.875rem;           /* 14px */
+
+  /* ─── Letter Spacing ──────────────────────────────────────────────── */
+  --sf-tracking-tight: -0.02em;
+  --sf-tracking-normal: 0;
+  --sf-tracking-wide: 0.08em;
+  --sf-tracking-wider: 0.12em;
+  --sf-tracking-widest: 0.18em;
+
+  /* ─── Spacing ─────────────────────────────────────────────────────── */
+  --sf-space-2xs: 0.25rem;   /* 4px */
+  --sf-space-xs: 0.5rem;     /* 8px */
+  --sf-space-sm: 0.75rem;    /* 12px */
+  --sf-space-md: 1rem;       /* 16px */
+  --sf-space-lg: 1.5rem;     /* 24px */
+  --sf-space-xl: 2rem;       /* 32px */
+  --sf-space-2xl: 3rem;      /* 48px */
+  --sf-space-3xl: 4rem;      /* 64px */
+  --sf-space-4xl: 6rem;      /* 96px */
+
+  /* ─── Radius (restrained) ─────────────────────────────────────────── */
+  --sf-radius-none: 0;
+  --sf-radius-sm: 2px;
+  --sf-radius-md: 4px;
+  --sf-radius-lg: 6px;
+
+  /* ─── Motion ──────────────────────────────────────────────────────── */
+  --sf-motion-fast: 150ms;
+  --sf-motion-normal: 250ms;
+  --sf-motion-slow: 400ms;
+  --sf-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --sf-ease-out: cubic-bezier(0, 0, 0.25, 1);
+
+  /* ─── Image Ratios ────────────────────────────────────────────────── */
+  --sf-ratio-product: 3 / 4;
+  --sf-ratio-hero: 16 / 9;
+  --sf-ratio-category: 4 / 5;
+
+  /* ─── Z-Index ─────────────────────────────────────────────────────── */
+  --sf-z-header: 50;
+  --sf-z-overlay: 60;
+  --sf-z-drawer: 70;
+  --sf-z-modal: 80;
+
+  /* ─── Container ───────────────────────────────────────────────────── */
+  --sf-container: 1280px;
+  --sf-container-wide: 1440px;
+  --sf-gutter: 1rem;
+
+  /* Apply base styles */
+  font-family: var(--sf-font-primary);
+  color: var(--sf-charcoal);
+  background-color: var(--sf-bg);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Desktop gutter */
+@media (min-width: 640px) {
+  .storefront {
+    --sf-gutter: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .storefront {
+    --sf-gutter: 2rem;
+  }
+}
+
+/* ─── Typography Utilities ────────────────────────────────────────────── */
+
+.storefront .sf-font-display {
+  font-family: var(--sf-font-display);
+}
+
+.storefront .sf-font-primary {
+  font-family: var(--sf-font-primary);
+}
+
+.storefront :focus-visible {
+  outline: 2px solid var(--sf-black);
+  outline-offset: 3px;
+}
+
+/* ─── Scroll Reveal Animation ─────────────────────────────────────────── */
+
+@keyframes sf-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.storefront .sf-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.storefront .sf-reveal.sf-visible {
+  animation: sf-reveal var(--sf-motion-slow) var(--sf-ease-out) forwards;
+}
+
+/* Staggered children */
+.storefront .sf-reveal-stagger > .sf-reveal-child {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child {
+  animation: sf-reveal var(--sf-motion-slow) var(--sf-ease-out) forwards;
+}
+
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(1) { animation-delay: 0ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(2) { animation-delay: 80ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(3) { animation-delay: 160ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(4) { animation-delay: 240ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(5) { animation-delay: 320ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(6) { animation-delay: 400ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(7) { animation-delay: 480ms; }
+.storefront .sf-reveal-stagger.sf-visible > .sf-reveal-child:nth-child(8) { animation-delay: 560ms; }
+
+/* ─── Image Crossfade (Product Cards) ─────────────────────────────────── */
+
+.storefront .sf-image-crossfade {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--sf-ratio-product);
+  background-color: var(--sf-off-white);
+}
+
+.storefront .sf-image-crossfade img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--sf-motion-normal) var(--sf-ease);
+}
+
+.storefront .sf-image-crossfade .sf-image-secondary {
+  opacity: 0;
+}
+
+.storefront .sf-image-crossfade:hover .sf-image-primary {
+  opacity: 0;
+}
+
+.storefront .sf-image-crossfade:hover .sf-image-secondary {
+  opacity: 1;
+}
+
+/* ─── Premium Button ──────────────────────────────────────────────────── */
+
+.storefront .sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 2rem;
+  font-family: var(--sf-font-primary);
+  font-size: var(--sf-text-nav);
+  font-weight: 500;
+  letter-spacing: var(--sf-tracking-wider);
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: var(--sf-radius-sm);
+  cursor: pointer;
+  transition: background-color var(--sf-motion-fast) var(--sf-ease), color var(--sf-motion-fast) var(--sf-ease), border-color var(--sf-motion-fast) var(--sf-ease), opacity var(--sf-motion-fast) var(--sf-ease);
+  text-decoration: none;
+  line-height: 1;
+}
+
+.storefront .sf-btn-primary {
+  background-color: var(--sf-black);
+  color: var(--sf-white);
+  border-color: var(--sf-black);
+}
+
+.storefront .sf-btn-primary:hover {
+  background-color: var(--sf-charcoal);
+}
+
+.storefront .sf-btn-secondary {
+  background-color: transparent;
+  color: var(--sf-black);
+  border-color: var(--sf-black);
+}
+
+.storefront .sf-btn-secondary:hover {
+  background-color: var(--sf-black);
+  color: var(--sf-white);
+}
+
+.storefront .sf-btn-white {
+  background-color: var(--sf-white);
+  color: var(--sf-black);
+  border-color: var(--sf-white);
+}
+
+.storefront .sf-btn-white:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.storefront .sf-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Product Grid ────────────────────────────────────────────────────── */
+
+.storefront .sf-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .storefront .sf-product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .storefront .sf-product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ─── Container ───────────────────────────────────────────────────────── */
+
+.storefront .sf-container {
+  width: 100%;
+  max-width: var(--sf-container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--sf-gutter);
+  padding-right: var(--sf-gutter);
+}
+
+.storefront .sf-container-wide {
+  width: 100%;
+  max-width: var(--sf-container-wide);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--sf-gutter);
+  padding-right: var(--sf-gutter);
+}
+
+/* ─── Section Spacing ─────────────────────────────────────────────────── */
+
+.storefront .sf-section {
+  padding-top: var(--sf-space-2xl);
+  padding-bottom: var(--sf-space-2xl);
+}
+
+@media (min-width: 768px) {
+  .storefront .sf-section {
+    padding-top: var(--sf-space-3xl);
+    padding-bottom: var(--sf-space-3xl);
+  }
+}
+
+/* ─── Product Badge ───────────────────────────────────────────────────── */
+
+.storefront .sf-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--sf-tracking-wide);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.storefront .sf-badge-new {
+  background-color: var(--sf-black);
+  color: var(--sf-white);
+}
+
+.storefront .sf-badge-sale {
+  background-color: var(--sf-sale);
+  color: var(--sf-white);
+}
+
+.storefront .sf-badge-bestseller {
+  background-color: var(--sf-charcoal);
+  color: var(--sf-white);
+}
+
+/* ─── Scrollbar (storefront) ──────────────────────────────────────────── */
+
+.storefront {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sf-border-dark) transparent;
+}
+
+.storefront::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.storefront::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.storefront::-webkit-scrollbar-thumb {
+  background-color: var(--sf-border-dark);
+  border-radius: 3px;
+}
+
+/* ─── Selection ───────────────────────────────────────────────────────── */
+
+.storefront ::selection {
+  background: var(--sf-black);
+  color: var(--sf-white);
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .storefront .sf-reveal,
+  .storefront .sf-reveal-stagger > .sf-reveal-child {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .storefront .sf-image-crossfade img {
+    transition: none;
+  }
+
+  .storefront .sf-btn {
+    transition: none;
+  }
+
+  .storefront * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Sticky Header Transition ────────────────────────────────────────── */
+
+.storefront .sf-header {
+  box-shadow: 0 1px 0 rgb(255 255 255 / 18%);
+  transition: background-color var(--sf-motion-fast) var(--sf-ease), border-color var(--sf-motion-fast) var(--sf-ease), box-shadow var(--sf-motion-fast) var(--sf-ease);
+}
+
+.storefront .sf-header-home {
+  border-bottom: 1px solid rgb(255 255 255 / 20%);
+  background-color: rgb(23 23 23 / 12%);
+  backdrop-filter: blur(18px);
+}
+
+.storefront .sf-header-home:not(.sf-header-compact) .sf-nav-link {
+  color: rgb(255 255 255 / 82%);
+}
+
+.storefront .sf-header-home:not(.sf-header-compact) .sf-nav-link:hover {
+  color: #ffffff;
+}
+
+.storefront .sf-header-home:not(.sf-header-compact) .sf-nav-link::after {
+  background-color: #ffffff;
+}
+
+.storefront .sf-header.sf-header-compact {
+  background-color: rgb(255 255 255 / 64%);
+  box-shadow: 0 1px 0 rgb(23 23 23 / 10%);
+}
+
+/* ─── Nav Link Underline ──────────────────────────────────────────────── */
+
+.storefront .sf-nav-link {
+  position: relative;
+  text-decoration: none;
+  color: var(--sf-charcoal);
+  transition: color var(--sf-motion-fast) var(--sf-ease);
+}
+
+.storefront .sf-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--sf-black);
+  transition: width var(--sf-motion-normal) var(--sf-ease);
+}
+
+.storefront .sf-nav-link:hover::after,
+.storefront .sf-nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* ─── Overlay ─────────────────────────────────────────────────────────── */
+
+.storefront .sf-overlay-bg {
+  position: fixed;
+  inset: 0;
+  background-color: var(--sf-overlay);
+  z-index: var(--sf-z-overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--sf-motion-normal) var(--sf-ease);
+}
+
+.storefront .sf-overlay-bg.sf-overlay-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─── Quick Add Strip (Desktop) ───────────────────────────────────────── */
+
+.storefront .sf-quick-add {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 0;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  font-size: var(--sf-text-utility);
+  font-weight: 600;
+  letter-spacing: var(--sf-tracking-wider);
+  text-transform: uppercase;
+  color: var(--sf-black);
+  transform: translateY(100%);
+  transition: transform var(--sf-motion-normal) var(--sf-ease);
+  cursor: pointer;
+}
+
+.storefront .sf-image-crossfade:hover .sf-quick-add {
+  transform: translateY(0);
+}
+
+/* Hide quick add on touch devices */
+@media (hover: none) {
+  .storefront .sf-quick-add {
+    display: none;
+  }
+}

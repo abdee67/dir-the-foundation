@@ -1,0 +1,24 @@
+# dependencies
+node_modules
+
+# next.js build output
+.next
+
+# environment variables
+.env
+.env*.local
+
+# os
+.DS_Store
+
+# typescript
+*.tsbuildinfo
+
+# codegraph index (local cache, not tracked)
+.codegraph
+
+# supabase local state
+supabase/.temp
+
+#folders
+docs

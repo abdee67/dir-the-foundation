@@ -1,0 +1,361 @@
+/**
+ * Scarpar print stylesheets — receipts & labels.
+ *
+ * Self-contained: does NOT depend on globals.css tokens/variables. Print routes render
+ * outside the admin chrome (docs/conventions.md — "Print pages: bare layout, load
+ * src/styles/print.css"), via the browser print dialog → PDF / thermal / label printer
+ * (no Puppeteer, no server render step — docs/architecture.md §9 / .memory/decisions.md #5).
+ * Ink is literal black/gray on white throughout: print output isn't themed.
+ *
+ * Three formats, one file, three root classes: .print-a4 / .print-thermal / .print-label.
+ * Each print route renders exactly one of the three.
+ */
+
+/* ============================================================================
+   Named page boxes — one per format; `page:` on each root container below
+   selects the right box (CSS Paged Media). Degrades gracefully (default page
+   size/margins) on engines without named-page support.
+   ============================================================================ */
+@page a4-page {
+  size: A4 portrait;
+  margin: 12mm 10mm;
+}
+@page thermal-page {
+  size: 80mm auto; /* continuous roll — no fixed page length */
+  margin: 0;
+}
+@page label-page {
+  size: 100mm 150mm;
+  margin: 0;
+}
+
+/* ============================================================================
+   Shared base — screen preview + print
+   ============================================================================ */
+.print-a4,
+.print-thermal,
+.print-label {
+  box-sizing: border-box;
+  margin: 0 auto;
+  background: #fff;
+  color: #000;
+  font-family: 'Inter', 'Noto Sans Bengali', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+  /* Screen-preview-only page-edge hint — a border, not a shadow, to match the admin
+     system's "borders over shadows" rule even here. Gone entirely under @media print. */
+  border: 1px solid #e4e4e7;
+}
+.print-a4 *,
+.print-thermal *,
+.print-label * {
+  box-sizing: border-box;
+}
+.print-a4 table,
+.print-thermal table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Tracking / consignment codes benefit from unambiguous glyph shapes (0/O, 1/l/I) —
+   scoped narrowly so it never touches Bengali copy elsewhere on the sheet. */
+.mono-code {
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================================
+   @media print — rules governing the actual physical output
+   ============================================================================ */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    margin: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-a4,
+  .print-thermal,
+  .print-label {
+    border: none;
+    margin: 0;
+  }
+
+  /* Black-on-white enforcement — never trust a printer to reproduce the admin theme's
+     zinc/emerald palette; force pure ink instead of "close enough" gray. */
+  .print-a4,
+  .print-thermal,
+  .print-label,
+  .print-a4 *,
+  .print-thermal *,
+  .print-label * {
+    color: #000 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000 !important;
+  }
+}
+
+/* ============================================================================
+   1. A4 invoice — .print-a4
+      Also serves the a4_mushak VAT variant (Mushak 6.3 header + HS-code/VAT columns):
+      those are markup-level additions on the same header/items/totals structure below,
+      no extra classes required.
+   ============================================================================ */
+.print-a4 {
+  page: a4-page;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 14mm 12mm;
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media print {
+  .print-a4 {
+    width: auto;
+    min-height: auto;
+    padding: 0;
+  }
+}
+
+.print-a4 .receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #000;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.print-a4 .receipt-brand { font-size: 18px; font-weight: 700; }
+.print-a4 .receipt-title { font-size: 14px; font-weight: 600; text-align: right; }
+.print-a4 .receipt-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  font-size: 11px;
+}
+.print-a4 .receipt-meta address { font-style: normal; line-height: 1.5; }
+
+.print-a4 .receipt-items th {
+  border-bottom: 1.5px solid #000;
+  text-align: left;
+  padding: 5px 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.print-a4 .receipt-items td {
+  border-bottom: 1px solid #999;
+  padding: 5px 6px;
+  vertical-align: top;
+}
+.print-a4 .receipt-items th.num,
+.print-a4 .receipt-items td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.print-a4 .receipt-totals {
+  width: 60mm;
+  margin-left: auto;
+  margin-top: 10px;
+  font-size: 11px;
+}
+.print-a4 .receipt-totals .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  font-variant-numeric: tabular-nums;
+}
+.print-a4 .receipt-totals .row--total {
+  border-top: 2px solid #000;
+  margin-top: 4px;
+  padding-top: 5px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.print-a4 .amount-words { margin-top: 8px; font-size: 10px; font-style: italic; }
+.print-a4 .receipt-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #999;
+  font-size: 10px;
+}
+
+/* ============================================================================
+   2. 80mm thermal receipt — .print-thermal (72mm printable width; continuous
+      roll, monochrome). Numeric columns use tabular-nums for alignment instead
+      of forcing the whole receipt into a monospace face, which would break
+      Bengali glyph shaping; codes that DO want monospace use .mono-code.
+   ============================================================================ */
+.print-thermal {
+  page: thermal-page;
+  width: 72mm;
+  padding: 3mm 4mm;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500; /* thermal printheads render default/regular weight too faintly */
+}
+@media print {
+  .print-thermal { width: 100%; padding: 2mm 4mm; }
+}
+
+.print-thermal .receipt-brand {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+.print-thermal .receipt-meta {
+  text-align: center;
+  font-size: 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 6px;
+}
+.print-thermal .receipt-items { font-size: 11px; }
+.print-thermal .receipt-items .item-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 2px 0;
+}
+.print-thermal .receipt-items .item-name { flex: 1; }
+.print-thermal .receipt-items .item-qty,
+.print-thermal .receipt-items .item-amount {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.print-thermal .receipt-totals {
+  border-top: 1px dashed #000;
+  margin-top: 6px;
+  padding-top: 6px;
+  font-size: 11px;
+}
+.print-thermal .receipt-totals .row {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+.print-thermal .receipt-totals .row--total {
+  font-size: 15px;
+  font-weight: 800;
+  border-top: 1px solid #000;
+  margin-top: 3px;
+  padding-top: 3px;
+}
+.print-thermal .receipt-footer {
+  text-align: center;
+  font-size: 9px;
+  margin-top: 8px;
+  border-top: 1px dashed #000;
+  padding-top: 6px;
+}
+
+/* ============================================================================
+   3. 4x6 shipping label — .print-label (100mm x 150mm, courier/rider hand-off)
+   ============================================================================ */
+.print-label {
+  page: label-page;
+  width: 100mm;
+  height: 150mm;
+  padding: 5mm;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 4mm;
+}
+@media print {
+  .print-label { padding: 4mm; }
+}
+
+.print-label .label-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 3mm;
+}
+.print-label .label-brand { font-size: 14px; font-weight: 800; }
+.print-label .label-courier { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.print-label .label-tracking { font-size: 11px; text-align: center; }
+
+.print-label .label-address {
+  border: 1.5px solid #000;
+  border-radius: 2mm;
+  padding: 3mm;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.print-label .label-address-kind {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1mm;
+}
+.print-label .label-recipient { font-size: 14px; font-weight: 700; }
+
+.print-label .label-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+.print-label .label-footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 9px;
+  border-top: 1px solid #999;
+  padding-top: 2mm;
+}
+
+/* Shared QR sizing. */
+.qr-block {
+  width: 22mm;
+  height: 22mm;
+  flex: none;
+}
+.qr-block svg,
+.qr-block img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.print-thermal .qr-block {
+  width: 18mm;
+  height: 18mm;
+  margin: 4px auto 0;
+}
+
+/* The single most operationally important number on a COD label — never let a rider
+   misread it. Border not shadow, matching the wider design system even here. */
+.cod-big {
+  border: 2px solid #000;
+  border-radius: 2mm;
+  padding: 3mm;
+  text-align: center;
+}
+.cod-big .cod-big-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cod-big .cod-big-amount {
+  font-size: 34px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}

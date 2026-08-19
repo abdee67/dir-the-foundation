@@ -1,0 +1,288 @@
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "../styles/storefront.css";
+@import "../styles/admin.css";
+@source "../../src";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/**
+ * Scarpar design tokens — shadcn-v4-compatible naming (standard shadcn component source
+ * works against these variables unmodified). Canonical source of truth for every color,
+ * radius, and type token in the admin + storefront UI.
+ *
+ * Binding contract: docs/design-system.md — read it before building any UI. Never hardcode
+ * hex/rgb colors in components; reference these tokens via Tailwind utilities
+ * (`bg-card`, `text-muted-foreground`, `bg-emerald-100 dark:bg-emerald-950` …) or `var(--token)`
+ * for raw CSS / hand-rolled SVG (charts, barcodes).
+ *
+ * Aesthetic: "operational calm" — neutral zinc base, borders over shadows, ONE accent
+ * (deep emerald). Amber = COD/pending-cash + low-stock only. Red = destructive/failed.
+ */
+
+@theme inline {
+  /* ---------- Radius — one base, shadcn's calc() chain ---------- */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ---------- Fonts (next/font injects the real stacks on <body>; see layout.tsx) ---------- */
+  --font-sans: var(--font-sans);
+  --font-bengali: var(--font-bengali);
+
+  /* ---------- Dense-UI type scale — 11/12/13/14/16/20/24, see docs/design-system.md §b ---------- */
+  --text-2xs: 0.6875rem;       /* 11px */
+  --text-2xs--line-height: 0.9375rem;
+  --text-xs: 0.75rem;          /* 12px */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem;        /* 13px — BASE body/data size */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;       /* 14px */
+  --text-base--line-height: 1.375rem;
+  --text-lg: 1rem;             /* 16px */
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;          /* 20px */
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;          /* 24px */
+  --text-2xl--line-height: 2rem;
+
+  /* ---------- Semantic color tokens — indirected through :root/.dark below so the
+     `dark` class-variant flip resolves at utility-use time, not build time ---------- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ---------- Raw brand ramps — theme-invariant (same hue/chroma in both themes).
+     Power `bg-emerald-100 dark:bg-emerald-950` style status-badge utilities directly;
+     see docs/design-system.md status-badge map for the exact per-status assignment.
+     Neutral gray is deliberately NOT redefined — Tailwind's stock `zinc-*` IS the
+     zinc-family neutral this system requires, referenced below via var(--color-zinc-*). ---------- */
+  --color-emerald-50: oklch(0.979 0.020 162);
+  --color-emerald-100: oklch(0.955 0.040 162);
+  --color-emerald-200: oklch(0.905 0.070 162);
+  --color-emerald-300: oklch(0.845 0.095 162);
+  --color-emerald-400: oklch(0.770 0.120 162);
+  --color-emerald-500: oklch(0.696 0.135 162);
+  --color-emerald-600: oklch(0.596 0.128 162);
+  --color-emerald-700: oklch(0.508 0.109 162);
+  --color-emerald-800: oklch(0.432 0.095 162);
+  --color-emerald-900: oklch(0.378 0.078 162);
+  --color-emerald-950: oklch(0.180 0.035 162);
+
+  --color-amber-50: oklch(0.987 0.022 75);
+  --color-amber-100: oklch(0.962 0.045 75);
+  --color-amber-200: oklch(0.924 0.075 75);
+  --color-amber-300: oklch(0.869 0.110 75);
+  --color-amber-400: oklch(0.800 0.145 75);
+  --color-amber-500: oklch(0.769 0.165 75);
+  --color-amber-600: oklch(0.666 0.157 75);
+  --color-amber-700: oklch(0.555 0.135 75);
+  --color-amber-800: oklch(0.470 0.110 75);
+  --color-amber-900: oklch(0.414 0.090 75);
+  --color-amber-950: oklch(0.279 0.060 75);
+
+  --color-red-50: oklch(0.971 0.015 25);
+  --color-red-100: oklch(0.936 0.032 25);
+  --color-red-200: oklch(0.885 0.060 25);
+  --color-red-300: oklch(0.808 0.095 25);
+  --color-red-400: oklch(0.704 0.150 25);
+  --color-red-500: oklch(0.637 0.208 25);
+  --color-red-600: oklch(0.577 0.215 25);
+  --color-red-700: oklch(0.505 0.190 25);
+  --color-red-800: oklch(0.440 0.165 25);
+  --color-red-900: oklch(0.396 0.130 25);
+  --color-red-950: oklch(0.258 0.090 25);
+}
+
+:root {
+  --radius: 0.5rem; /* 8px base → sm 4px / md 6px / lg 8px / xl 12px */
+
+  /* Fallback stacks — next/font (layout.tsx) overrides these on <body> via the SAME
+     variable names, so this only matters before hydration / outside body. */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-bengali: 'Noto Sans Bengali', var(--font-sans);
+
+  --background: var(--color-zinc-50);
+  --foreground: var(--color-zinc-950);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--color-zinc-950);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--color-zinc-950);
+
+  --primary: var(--color-emerald-800);
+  --primary-foreground: var(--color-emerald-50);
+  --secondary: var(--color-zinc-100);
+  --secondary-foreground: var(--color-zinc-900);
+  --muted: var(--color-zinc-100);
+  --muted-foreground: var(--color-zinc-600);
+  --accent: var(--color-zinc-100);
+  --accent-foreground: var(--color-zinc-900);
+
+  --destructive: var(--color-red-700);
+  --destructive-foreground: var(--color-red-50);
+  --success: var(--color-emerald-800);
+  --success-foreground: var(--color-emerald-50);
+  --warning: var(--color-amber-600);
+  --warning-foreground: var(--color-amber-950);
+
+  --border: var(--color-zinc-200);
+  --input: var(--color-zinc-200);
+  --ring: var(--color-emerald-800);
+
+  --chart-1: var(--color-emerald-600);
+  --chart-2: var(--color-amber-700);
+  --chart-3: oklch(0.540 0.145 235);
+  --chart-4: oklch(0.540 0.155 320);
+
+  --sidebar: var(--color-zinc-50);
+  --sidebar-foreground: var(--color-zinc-900);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--color-zinc-100);
+  --sidebar-accent-foreground: var(--color-zinc-900);
+  --sidebar-border: var(--color-zinc-200);
+  --sidebar-ring: var(--primary);
+}
+
+.dark {
+  --background: var(--color-zinc-950);
+  --foreground: var(--color-zinc-50);
+  --card: var(--color-zinc-900);
+  --card-foreground: var(--color-zinc-50);
+  --popover: var(--color-zinc-900);
+  --popover-foreground: var(--color-zinc-50);
+
+  --primary: var(--color-emerald-500);
+  --primary-foreground: var(--color-emerald-950);
+  --secondary: var(--color-zinc-800);
+  --secondary-foreground: var(--color-zinc-50);
+  --muted: var(--color-zinc-800);
+  --muted-foreground: var(--color-zinc-400);
+  --accent: var(--color-zinc-800);
+  --accent-foreground: var(--color-zinc-50);
+
+  /* Slightly brighter than light-mode red-700 — red-700 reads too close to zinc-900/950
+     to work as a bare ring/icon mark on dark surfaces (verified: 2.7:1, under the 3:1
+     UI-contrast floor). This oklch clears it (~3.1-3.5:1) while keeping white-text AA. */
+  --destructive: oklch(0.540 0.210 25);
+  --destructive-foreground: var(--color-red-50);
+  --success: var(--color-emerald-500);
+  --success-foreground: var(--color-emerald-950);
+  --warning: var(--color-amber-500);
+  --warning-foreground: var(--color-amber-950);
+
+  --border: var(--color-zinc-800);
+  --input: var(--color-zinc-800);
+  --ring: var(--color-emerald-500);
+
+  --chart-1: var(--color-emerald-500);
+  --chart-2: var(--color-amber-500);
+  --chart-3: oklch(0.620 0.150 235);
+  --chart-4: oklch(0.620 0.160 320);
+
+  --sidebar: var(--color-zinc-950);
+  --sidebar-foreground: var(--color-zinc-50);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--color-zinc-800);
+  --sidebar-accent-foreground: var(--color-zinc-50);
+  --sidebar-border: var(--color-zinc-800);
+  --sidebar-ring: var(--primary);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--color-emerald-200);
+    color: var(--color-emerald-950);
+  }
+  .dark ::selection {
+    background: var(--color-emerald-800);
+    color: var(--color-emerald-50);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Thin scrollbars — dense UI, no fat OS-default bars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: var(--radius-xl);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+}
+
+@layer utilities {
+  /* Bengali text — swap the family for any block/label rendering Bangla copy */
+  .text-bengali {
+    font-family: var(--font-bengali);
+  }
+
+  /* Money/quantity table columns must never use proportional numerals (digits have to
+     align vertically). Tailwind already ships this utility core; declared explicitly here
+     so it's visible in the token contract and never silently skipped on a data column. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
