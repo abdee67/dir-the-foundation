@@ -11,8 +11,6 @@ import { getProductImages } from '@/components/store/get-product-images'
 import { ProductCard, type ProductCardData } from '@/components/store/product-card'
 import { type Lang } from '@/lib/i18n'
 
-export const dynamic = 'force-dynamic'
-
 type ProductRow = Pick<
   Product,
   | 'id'
@@ -29,7 +27,7 @@ type ProductRow = Pick<
 
 const PRODUCT_FIELDS = 'id, slug, name, price, compare_at_price, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at'
 
-export default async function StorefrontHomePage() {
+export async function StorefrontHomePage() {
   const org = await getSingleStoreOrg()
   const settings = await getOrgSettings(org.id)
   const lang = settingStr(settings, 'localization.language') as Lang

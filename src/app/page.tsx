@@ -1,8 +1,10 @@
 import StoreLayout from '@/app/(store)/layout'
-import StorefrontHomePage from '@/app/(store)/page'
+import { StorefrontHomePage } from '@/modules/storefront/storefront-home-page'
 
-// Route groups do not wrap this root-level page. Keep the public homepage in
-// the same storefront shell as /products, /cart, and /checkout.
+export const dynamic = 'force-dynamic'
+
+// Route groups do not wrap this root-level page. The storefront content is a
+// shared component so `/` has a single App Router page definition.
 export default async function RootPage() {
   return (
     <StoreLayout>
