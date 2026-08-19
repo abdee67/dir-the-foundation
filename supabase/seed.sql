@@ -28,7 +28,6 @@ values
   ('00000000-0000-0000-0000-000000000001', 'storefront.whatsapp_number', '"251911000000"'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'storefront.primary_color', '"#171717"'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'delivery.default_zone_fallback', '35000'::jsonb),
-  ('00000000-0000-0000-0000-000000000001', 'delivery.free_above', '500000'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'checkout.min_order', '0'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'payments.instructions',
    '[{"name":"Telebirr","type":"mobile_wallet","phone":"09XXXXXXXX","account_name":"DIR (ድር) THE FOUNDATION"},{"name":"CBE Bank","type":"bank","account_number":"XXXXXXXXXXXX","account_name":"DIR (ድር) THE FOUNDATION"}]'::jsonb)

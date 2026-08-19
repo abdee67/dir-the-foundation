@@ -122,15 +122,6 @@ export const SETTING_DEFS: SettingDef[] = [
     type: 'number',
     default: 0,
   },
-  {
-    key: 'delivery.free_above',
-    group: 'delivery',
-    label: 'Free delivery above (ETB)',
-    help: '0 disables free delivery',
-    type: 'number',
-    default: 0,
-  },
-
   // fraud ---------------------------------------------------------------
   {
     key: 'fraud.enabled',

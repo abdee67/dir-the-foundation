@@ -20,7 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 /** Money fields are flagged by "paisa" appearing in the def's label/help, not
  *  by a key-name suffix — several v1 keys (checkout.min_order,
- *  delivery.default_zone_fallback, delivery.free_above) are paisa amounts
+ *  delivery.default_zone_fallback) are paisa amounts
  *  but don't end in "_amount", so a suffix match would under-detect them. */
 function isMoneyField(def: SettingDef): boolean {
   return def.type === 'number' && (/paisa/i.test(def.label) || /paisa/i.test(def.help ?? ''))

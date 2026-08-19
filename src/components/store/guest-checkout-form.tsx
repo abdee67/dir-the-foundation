@@ -22,7 +22,6 @@ import { useCart } from './cart-context'
 export interface GuestCheckoutSettings {
   orgSlug: string
   lang: Lang
-  freeDeliveryAbove: number
   deliveryAreas: { label: string; locations: string[] }[]
 }
 
@@ -87,11 +86,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
     setZoneQuote(result.ok ? (result.data ?? null) : null)
   }
 
-  const deliveryCharge = !zoneQuote
-    ? 0
-    : settings.freeDeliveryAbove > 0 && subtotal >= settings.freeDeliveryAbove
-      ? 0
-      : zoneQuote.charge
+  const deliveryCharge = zoneQuote?.charge ?? 0
   const total = subtotal + deliveryCharge
 
   async function onSubmit(values: GuestCheckoutValues) {

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { t, type Lang } from '@/lib/i18n'
-import { getOrgSettings, settingStr, settingNum } from '@/lib/settings'
+import { getOrgSettings, settingStr } from '@/lib/settings'
 import { getSingleStoreOrg } from '@/lib/store-org'
 import { getAdminClient } from '@/lib/supabase/admin'
 
@@ -27,7 +27,6 @@ export default async function CheckoutPage() {
   const checkoutSettings: GuestCheckoutSettings = {
     orgSlug: org.slug,
     lang,
-    freeDeliveryAbove: settingNum(settings, 'delivery.free_above'),
     deliveryAreas,
   }
 
