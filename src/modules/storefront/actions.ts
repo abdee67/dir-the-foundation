@@ -67,13 +67,6 @@ async function resolveDeliveryZone(
   }
 }
 
-/** `delivery.free_above` (0 disables it) — applied against the post-discount subtotal. */
-function applyFreeDelivery(charge: number, subtotalAfterDiscount: number, settings: Record<string, unknown>): number {
-  const freeAbove = settingNum(settings, 'delivery.free_above')
-  if (freeAbove > 0 && subtotalAfterDiscount >= freeAbove) return 0
-  return charge
-}
-
 interface PricedProductRow {
   id: string
   name: string
@@ -270,7 +263,6 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
 
     // 2. delivery zone --------------------------------------------------------------------------
     const zone = await resolveDeliveryZone(org.id, data.address.district, settings)
-    const deliveryCharge = applyFreeDelivery(zone.charge, subtotal, settings)
 
     // 3. create order with status pending_payment — NO payment row yet.
     //    Payment proof is submitted separately on /payment/[orderNo] after order creation.
@@ -287,7 +279,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
       customer: { name: data.contact.name, phone: data.contact.phone, email: data.contact.email ?? null },
       address: { line1: data.address.line1, area: data.address.area ?? null, district: data.address.district },
       delivery_zone_id: zone.zoneId,
-      delivery_charge: deliveryCharge,
+      delivery_charge: zone.charge,
       items: lines.map((l) => ({
         product_id: l.productId,
         variant_id: l.variantId,

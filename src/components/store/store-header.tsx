@@ -67,7 +67,7 @@ export function StoreHeader({
             <img
               src={logoSrc}
               alt={org.name}
-              className={`h-10 w-auto max-w-44 object-contain sm:h-11 sm:max-w-52 ${org.logo_path && lightTone ? 'brightness-0 invert' : ''}`}
+              className={`h-14 w-auto max-w-52 object-contain sm:h-16 sm:max-w-64 ${lightTone ? 'brightness-0 invert' : 'brightness-0'}`}
             />
           </Link>
 

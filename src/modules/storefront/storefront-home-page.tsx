@@ -79,22 +79,40 @@ export async function StorefrontHomePage() {
 
   return (
     <div className="bg-[var(--sf-bg)] text-[var(--sf-charcoal)]">
-      <section className="relative isolate min-h-[100svh] overflow-hidden bg-black text-white">
+      <section className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden bg-black text-white">
         {heroImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={heroImage} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
         ) : null}
-        <div className={`absolute inset-0 -z-10 ${heroImage ? 'bg-black/30' : 'bg-black'}`} />
-        <div className="mx-auto flex min-h-[100svh] w-full max-w-5xl items-center px-5 sm:px-8">
-          <h1 aria-label="DIR ድር THE FOUNDATION" className="flex w-full items-center justify-between gap-5 text-white sm:gap-8">
-            <span className="sf-font-display whitespace-nowrap text-[clamp(1rem,4vw,4rem)] font-normal leading-none tracking-[-0.055em] drop-shadow-sm">
-              DIR <span lang="am" className="ml-[0.18em] inline-block whitespace-nowrap text-[0.76em] tracking-[-0.04em]">(ድር)</span>
-            </span>
-            <span className="whitespace-nowrap text-right text-[clamp(0.65rem,1.65vw,1.55rem)] font-normal leading-none tracking-[0.1em] uppercase drop-shadow-sm">
-              THE FOUNDATION
-            </span>
-          </h1>
-        </div>
+        <div className={`absolute inset-0 -z-10 ${heroImage ? 'bg-black/40' : 'bg-black'}`} />
+
+        <h1 aria-label="DIR THE FOUNDATION" className="flex w-full max-w-5xl items-baseline justify-between px-4 sm:px-8">
+          {/* Left: DIR (pushed slightly toward center) */}
+          <span className="flex items-baseline pl-4 sm:pl-16 md:pl-24 text-[clamp(1.2rem,2.5vw,2.5rem)] font-light leading-none tracking-[0.2em] uppercase">
+            {'DIR'.split('').map((char, i) => (
+              <span
+                key={`dir-${i}`}
+                className="sf-hero-wave inline-block"
+                style={{ animationDelay: `${i * 0.12}s` }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
+
+          {/* Right: THE FOUNDATION */}
+          <span className="flex items-baseline text-[clamp(0.62rem,1.65vw,1.55rem)] font-light leading-none tracking-[0.2em] uppercase">
+            {'THE FOUNDATION'.split('').map((char, i) => (
+              <span
+                key={`tf-${i}`}
+                className={`sf-hero-wave inline-block ${char === ' ' ? 'w-[0.35em]' : ''}`}
+                style={{ animationDelay: `${0.9 + i * 0.06}s` }}
+              >
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+          </span>
+        </h1>
       </section>
 
       {categorySections.length > 0 && (
