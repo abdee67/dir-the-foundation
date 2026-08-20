@@ -81,7 +81,7 @@ export function Sidebar({ org, orgs, nav, collapsed = false, onNavigate, onToggl
         ) : (
           <Link href="/admin" className="flex min-w-0 items-center gap-3" onClick={onNavigate}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logoSrc} alt={org.name} className={`h-9 w-auto max-w-28 object-contain object-left ${org.logo_path ? 'brightness-0 invert' : ''}`} />
+            <img src={logoSrc} alt={org.name} className="h-9 w-auto max-w-28 object-contain object-left brightness-0 invert" />
             <span className="min-w-0">
               <span className="block truncate text-[12px] font-semibold tracking-[0.14em] uppercase text-sidebar-foreground">DIR <span className="font-normal">(ድር)</span></span>
               <span className="mt-0.5 block text-[8px] font-medium tracking-[0.2em] uppercase text-sidebar-foreground/50">The foundation</span>

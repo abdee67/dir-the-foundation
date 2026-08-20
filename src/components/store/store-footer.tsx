@@ -27,7 +27,7 @@ export function StoreFooter({
         <div>
           <Link href="/" className="inline-flex flex-col" aria-label={`${org.name} home`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logoSrc} alt={org.name} className="h-14 w-auto max-w-56 object-contain object-left sm:h-16 sm:max-w-64" />
+            <img src={logoSrc} alt={org.name} className={`h-14 w-auto max-w-56 object-contain object-left sm:h-16 sm:max-w-64 ${org.logo_path ? '' : 'brightness-0 invert'}`} />
           </Link>
           <p className="mt-6 max-w-xs text-sm leading-6 text-neutral-400">
             New arrivals, considered essentials, and updates from DIR (ድር) THE FOUNDATION.

@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next'
 
-import { DEFAULT_BRAND_LOGO_URL } from '@/lib/brand'
+import { BRAND_APP_ICON_192_URL, BRAND_APP_ICON_512_URL } from '@/lib/brand'
 
-/** Browser-installable identity, using the same approved DIR logo as the site. */
+/** Browser-installable identity using the dedicated DIR app icons. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'DIR (ድር) THE FOUNDATION',
@@ -14,9 +14,14 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#000000',
     icons: [
       {
-        src: DEFAULT_BRAND_LOGO_URL,
-        sizes: '360x720',
-        type: 'image/jpeg',
+        src: BRAND_APP_ICON_192_URL,
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: BRAND_APP_ICON_512_URL,
+        sizes: '512x512',
+        type: 'image/png',
       },
     ],
   }

@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: org.name,
       title: org.name,
       description: `Shop ${org.name} online.`,
-      images: [{ url: DEFAULT_BRAND_LOGO_URL, width: 360, height: 720, alt: `${org.name} logo` }],
+      images: [{ url: DEFAULT_BRAND_LOGO_URL, width: 512, height: 512, alt: `${org.name} logo` }],
     },
     twitter: {
       card: 'summary',

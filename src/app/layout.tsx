@@ -4,7 +4,13 @@ import { DM_Sans, Playfair_Display, Inter, Noto_Sans_Bengali } from "next/font/g
 import { Toaster } from "sonner";
 import "./globals.css";
 import { env } from '@/lib/env'
-import { DEFAULT_BRAND_LOGO_URL } from '@/lib/brand'
+import {
+  BRAND_APPLE_TOUCH_ICON_URL,
+  BRAND_FAVICON_16_URL,
+  BRAND_FAVICON_32_URL,
+  BRAND_FAVICON_URL,
+  DEFAULT_BRAND_LOGO_URL,
+} from '@/lib/brand'
 import { NavigationProgress } from '@/components/navigation-progress'
 
 const dmSans = DM_Sans({
@@ -45,9 +51,13 @@ export const metadata: Metadata = {
   category: 'fashion',
   robots: { index: true, follow: true },
   icons: {
-    icon: [{ url: DEFAULT_BRAND_LOGO_URL, type: 'image/jpeg', sizes: '360x720' }],
-    shortcut: [{ url: DEFAULT_BRAND_LOGO_URL, type: 'image/jpeg' }],
-    apple: [{ url: DEFAULT_BRAND_LOGO_URL, type: 'image/jpeg', sizes: '360x720' }],
+    icon: [
+      { url: BRAND_FAVICON_URL, type: 'image/x-icon' },
+      { url: BRAND_FAVICON_16_URL, type: 'image/png', sizes: '16x16' },
+      { url: BRAND_FAVICON_32_URL, type: 'image/png', sizes: '32x32' },
+    ],
+    shortcut: [BRAND_FAVICON_URL],
+    apple: [{ url: BRAND_APPLE_TOUCH_ICON_URL, type: 'image/png', sizes: '180x180' }],
   },
   openGraph: {
     type: 'website',
@@ -55,7 +65,7 @@ export const metadata: Metadata = {
     siteName: 'DIR (ድር) THE FOUNDATION',
     title: 'DIR (ድር) THE FOUNDATION',
     description: 'Considered fashion for everyday life.',
-    images: [{ url: DEFAULT_BRAND_LOGO_URL, width: 360, height: 720, alt: 'DIR (ድር) THE FOUNDATION logo' }],
+    images: [{ url: DEFAULT_BRAND_LOGO_URL, width: 512, height: 512, alt: 'DIR (ድር) THE FOUNDATION logo' }],
   },
   twitter: {
     card: 'summary',
