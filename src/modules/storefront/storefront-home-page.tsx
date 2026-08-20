@@ -86,9 +86,9 @@ export async function StorefrontHomePage() {
         ) : null}
         <div className={`absolute inset-0 -z-10 ${heroImage ? 'bg-black/40' : 'bg-black'}`} />
 
-        <h1 aria-label="DIR THE FOUNDATION" className="flex w-full max-w-5xl items-baseline justify-between px-4 sm:px-8">
-          {/* Left: DIR (pushed slightly toward center) */}
-          <span className="flex items-baseline pl-4 sm:pl-16 md:pl-24 text-[clamp(1.2rem,2.5vw,2.5rem)] font-light leading-none tracking-[0.2em] uppercase">
+        <h1 aria-label="DIR (ድር) THE FOUNDATION" className="flex w-full max-w-5xl items-baseline justify-between gap-6 px-4 sm:gap-12 sm:px-8">
+          {/* Left: keep the full DIR mark away from the opposing wordmark. */}
+          <span className="flex shrink-0 items-baseline pl-0 text-[clamp(1rem,1.5vw,2.5rem)] font-light leading-none tracking-[0.2em] uppercase sm:pl-6 md:pl-10">
             {'DIR'.split('').map((char, i) => (
               <span
                 key={`dir-${i}`}
@@ -98,6 +98,9 @@ export async function StorefrontHomePage() {
                 {char}
               </span>
             ))}
+            <span lang="am" className="sf-hero-wave ml-[0.55em] inline-block whitespace-nowrap tracking-normal" style={{ animationDelay: '0.42s' }}>
+              (ድር)
+            </span>
           </span>
 
           {/* Right: THE FOUNDATION */}
