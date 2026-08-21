@@ -9,7 +9,7 @@ insert into public.orgs (id, name, slug, vertical, plan, enabled_modules, curren
 values (
   '00000000-0000-0000-0000-000000000001',
   'DIR (ድር) THE FOUNDATION', 'dir-the-foundation', 'ecommerce', 'pro',
-  array['catalog','orders','cms','storefront']::text[],
+  array['catalog','orders','cms','storefront','drops']::text[],
   'ETB', 'ET', 'Africa/Addis_Ababa', '0911000000', 'hello@dirfoundation.et', 'Addis Ababa, Ethiopia', true
 )
 on conflict (id) do update set
