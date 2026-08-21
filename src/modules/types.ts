@@ -5,6 +5,7 @@ export type ModuleKey =
   | 'orders'
   | 'cms'
   | 'storefront'
+  | 'drops'
 
 export interface ModuleDef {
   key: ModuleKey

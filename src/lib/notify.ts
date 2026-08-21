@@ -12,6 +12,7 @@ export type NotifyEvent =
   | 'low_stock'
   | 'return_requested'
   | 'inquiry_received'
+  | 'drop_phase_changed'
 
 export type NotifyChannel = 'inapp' | 'sms' | 'email'
 
