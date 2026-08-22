@@ -48,7 +48,7 @@ export function CartView({ orgSlug }: { orgSlug: string; lang?: string }) {
         </div>
         <div className="divide-y divide-neutral-200 border-b border-neutral-200">
           {items.map((item) => (
-            <CartLineItem key={`${item.productId}-${item.variantId ?? ''}`} item={item} />
+            <CartLineItem key={item.lineKey ?? `${item.productId}-${item.variantId ?? ''}`} item={item} />
           ))}
         </div>
       </section>

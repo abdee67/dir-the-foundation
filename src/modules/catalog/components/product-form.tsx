@@ -48,6 +48,7 @@ function toFormValues(product?: Product): ProductFormValues {
       slug: '',
       description: '',
       brand: '',
+      color: '',
       category_id: null,
       status: 'draft',
       price: '',
@@ -68,6 +69,7 @@ function toFormValues(product?: Product): ProductFormValues {
     slug: product.slug,
     description: product.description ?? '',
     brand: product.brand ?? '',
+    color: product.color ?? '',
     category_id: product.category_id,
     status: product.status,
     price: fromPaisa(product.price).toFixed(2),
@@ -93,6 +95,7 @@ function toActionInput(values: ProductFormValues): ProductActionInput {
     slug: values.slug,
     description: values.description?.trim() ? values.description.trim() : null,
     brand: values.brand?.trim() ? values.brand.trim() : null,
+    color: values.color?.trim() ? values.color.trim() : null,
     category_id: values.category_id,
     status: values.status,
     price: toPaisa(values.price),
@@ -234,7 +237,7 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 sm:grid-cols-3">
                   <FormField
                     control={form.control}
                     name="brand"
@@ -243,6 +246,19 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                         <FormLabel>Brand</FormLabel>
                         <FormControl>
                           <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Color</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Espresso" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

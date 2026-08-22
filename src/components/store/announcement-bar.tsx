@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
 
 function dismissKey(text: string): string {
@@ -10,6 +11,8 @@ function dismissKey(text: string): string {
 /** settings.storefront.announcement text — sleek, editorial, dismissible. */
 export function AnnouncementBar({ text }: { text?: string | null }) {
   const [dismissed, setDismissed] = useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const defaultText = text || 'DIR (ድር) THE FOUNDATION'
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export function AnnouncementBar({ text }: { text?: string | null }) {
     }
   }, [defaultText])
 
-  if (dismissed) return null
+  if (dismissed || (pathname === '/checkout' && searchParams.get('from') === 'reveal')) return null
 
   function handleDismiss() {
     setDismissed(true)

@@ -96,7 +96,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
       orgSlug,
       contact: { name: values.name, phone: values.phone, email: values.email },
       address: { line1: values.line1, area: values.area, district: values.district },
-      items: items.map((item) => ({ productId: item.productId, variantId: item.variantId ?? null, qty: item.qty })),
+      items: items.map((item) => ({ productId: item.productId, variantId: item.variantId ?? null, qty: item.qty, reveal: item.reveal })),
       noteCustomer: values.noteCustomer,
     }
 
@@ -252,7 +252,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
 
             <ul className="divide-y divide-neutral-300 py-3">
               {items.map((item) => (
-                <li key={`${item.productId}-${item.variantId ?? ''}`} className="flex items-start justify-between gap-4 py-3 text-xs">
+                <li key={item.lineKey ?? `${item.productId}-${item.variantId ?? ''}`} className="flex items-start justify-between gap-4 py-3 text-xs">
                   <span className="min-w-0 leading-5 text-neutral-700">
                     <span className="block truncate font-medium tracking-[0.03em] text-neutral-900">{item.name}</span>
                     <span className="text-neutral-500">

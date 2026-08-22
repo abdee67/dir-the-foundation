@@ -21,6 +21,7 @@ export interface PurchaseProduct {
   stock_qty: number
   low_stock_threshold: number
   allow_backorder: boolean
+  color?: string | null
   restock_at?: string | null
 }
 
@@ -62,6 +63,7 @@ export function ProductPurchasePanel({
       variantId: selected?.id ?? null,
       name: product.name,
       variantName: (selected?.options as Record<string,string> | null)?.size ?? selected?.name ?? null,
+      color: product.color ?? null,
       unitPrice: price,
       image,
       qty,
@@ -87,6 +89,8 @@ export function ProductPurchasePanel({
           </span>
         )}
       </div>
+
+      {product.color && <p className="text-[11px] font-semibold tracking-[0.14em] uppercase text-neutral-500">Color: <span className="font-medium text-neutral-900">{product.color}</span></p>}
 
       {/* Size Variant Selector */}
       {variants.length > 0 && (

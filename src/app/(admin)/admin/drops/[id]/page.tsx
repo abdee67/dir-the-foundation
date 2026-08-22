@@ -34,5 +34,5 @@ export default async function DropEditorPage({ params }: PageProps<{ id: string 
     failed: entries.filter((entry) => entry.notification_status === 'failed').length,
     entries,
   }
-  return <div className="flex flex-col gap-6"><PageHeader eyebrow={`${drop.drop_number} · Campaign control`} title={drop.name} description="Configure the release, then deliberately control when customers move through it." backHref="/admin/drops" /><DropEditor mode="edit" drop={drop} products={(productsResult.data ?? []) as Pick<Product, 'id' | 'name' | 'price' | 'status'>[]} media={media} waitlist={waitlist} events={(eventsResult.data ?? []) as DropPhaseEvent[]} emailConfigured={Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL)} /></div>
+  return <div className="flex flex-col gap-6"><PageHeader eyebrow={`${drop.drop_number} · Campaign control`} title={drop.name} description="Configure the release, then deliberately control when customers move through it." backHref="/admin/drops" /><DropEditor mode="edit" drop={drop} products={(productsResult.data ?? []) as Pick<Product, 'id' | 'name' | 'price' | 'status'>[]} media={media} waitlist={waitlist} events={(eventsResult.data ?? []) as DropPhaseEvent[]} smsConfigured={Boolean(process.env.AFROMESSAGE_TOKEN && process.env.AFROMESSAGE_IDENTIFIER_ID && process.env.AFROMESSAGE_SENDER)} /></div>
 }

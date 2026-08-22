@@ -79,7 +79,7 @@ export default async function ProductPage({ params }: PageProps<{ slug: string }
       .order('position', { ascending: true }),
     supabase
       .from('products')
-      .select('id, slug, name, price, compare_at_price, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at')
+      .select('id, slug, name, price, compare_at_price, color, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at')
       .eq('org_id', org.id)
       .eq('status', 'active')
       .neq('id', product.id)
@@ -183,6 +183,8 @@ export default async function ProductPage({ params }: PageProps<{ slug: string }
           <h1 className="sf-font-display text-2xl font-normal text-neutral-900 sm:text-3xl">
             {product.name}
           </h1>
+
+          {product.color && <p className="text-[11px] font-semibold tracking-[0.16em] uppercase text-neutral-500">Color · <span className="text-neutral-900">{product.color}</span></p>}
 
           {/* Sale countdown timer if applicable */}
           {isSale && product.sale_ends_at && (

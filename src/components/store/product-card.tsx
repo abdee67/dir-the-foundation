@@ -12,7 +12,7 @@ import { storePath } from './store-links'
 export interface ProductCardData
   extends Pick<
     Product,
-    'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder'
+    'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder' | 'color'
   > {
   image: string | null
   secondaryImage?: string | null
@@ -133,6 +133,8 @@ export function ProductCard({
         >
           {product.name}
         </Link>
+
+        {product.color && <p className="mt-1 text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-500">{product.color}</p>}
 
         {/* Price & Discounts */}
         <div className="mt-1 flex items-baseline gap-2">

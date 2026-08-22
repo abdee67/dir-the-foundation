@@ -7,7 +7,7 @@ import type { BlockRenderContext } from './render-blocks'
 
 type GridProductRow = Pick<
   Product,
-  'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder'
+  'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'color' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder'
 >
 
 export async function ProductGridBlockView({ block, ctx }: { block: ProductGridBlock; ctx: BlockRenderContext }) {
@@ -18,7 +18,7 @@ export async function ProductGridBlockView({ block, ctx }: { block: ProductGridB
 
   let query = supabase
     .from('products')
-    .select('id, slug, name, price, compare_at_price, track_stock, stock_qty, low_stock_threshold, allow_backorder')
+    .select('id, slug, name, price, compare_at_price, color, track_stock, stock_qty, low_stock_threshold, allow_backorder')
     .eq('org_id', ctx.org.id)
     .eq('status', 'active')
 

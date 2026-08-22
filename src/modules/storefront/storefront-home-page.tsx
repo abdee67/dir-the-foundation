@@ -18,6 +18,7 @@ type ProductRow = Pick<
   | 'name'
   | 'price'
   | 'compare_at_price'
+  | 'color'
   | 'tags'
   | 'track_stock'
   | 'stock_qty'
@@ -25,7 +26,7 @@ type ProductRow = Pick<
   | 'allow_backorder'
 > & { sale_ends_at?: string | null; restock_at?: string | null }
 
-const PRODUCT_FIELDS = 'id, slug, name, price, compare_at_price, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at'
+const PRODUCT_FIELDS = 'id, slug, name, price, compare_at_price, color, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at'
 
 export async function StorefrontHomePage() {
   const org = await getSingleStoreOrg()
