@@ -32,6 +32,7 @@ export interface PublicRevealDrop {
     name: string
     price: number
     compareAtPrice: number | null
+    color: string | null
     trackStock: boolean
     allowBackorder: boolean
     stockQty: number
@@ -84,7 +85,7 @@ export const resolvePublicDrop = cache(async (orgId: string): Promise<PublicDrop
     const [{ data: product, error: productError }, media] = await Promise.all([
       supabase
         .from('products')
-        .select('id, name, price, compare_at_price, track_stock, allow_backorder, stock_qty')
+        .select('id, name, price, compare_at_price, color, track_stock, allow_backorder, stock_qty')
         .eq('id', drop.reveal_product_id)
         .eq('org_id', orgId)
         .eq('status', 'active')
@@ -114,6 +115,7 @@ export const resolvePublicDrop = cache(async (orgId: string): Promise<PublicDrop
           name: product.name,
           price: product.price,
           compareAtPrice: product.compare_at_price,
+          color: product.color,
           trackStock: product.track_stock,
           allowBackorder: product.allow_backorder,
           stockQty: product.stock_qty,

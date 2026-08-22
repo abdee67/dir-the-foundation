@@ -34,8 +34,11 @@ type OrderRow = Pick<
 >
 type OrderItemRow = Pick<OrderItem, 'id' | 'product_name' | 'variant_name' | 'qty' | 'unit_price' | 'line_total'>
 
-export default async function OrderConfirmationPage({ params }: PageProps<{ orderNo: string }>) {
+export default async function OrderConfirmationPage({ params, searchParams }: PageProps<{ orderNo: string }, { from?: string }>) {
   const { orderNo } = await params
+  const { from } = await searchParams
+  const isRevealFlow = from === 'reveal'
+  const revealQuery = isRevealFlow ? '?from=reveal' : ''
   const org = await getSingleStoreOrg()
   const settings = await getOrgSettings(org.id)
 
@@ -187,14 +190,14 @@ export default async function OrderConfirmationPage({ params }: PageProps<{ orde
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
         {!proofSubmitted && (
           <Link
-            href={`/payment/${order.order_no}`}
+            href={`/payment/${order.order_no}${revealQuery}`}
             className="flex h-12 items-center justify-center border border-black bg-black px-4 text-[11px] font-semibold tracking-[0.14em] uppercase text-white transition-colors hover:bg-neutral-800"
           >
               Submit Payment Proof <ArrowRight className="ml-2 size-4" />
           </Link>
         )}
         <Link
-          href={`/track?order=${order.order_no}`}
+          href={`/track?order=${order.order_no}${isRevealFlow ? '&from=reveal' : ''}`}
           className="flex h-12 items-center justify-center border border-black px-4 text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors hover:bg-black hover:text-white"
         >
           Track order

@@ -30,7 +30,7 @@ export function StoreHeader({
   const [compact, setCompact] = useState(false)
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const isRevealCheckout = pathname === '/checkout' && searchParams.get('from') === 'reveal'
+  const isRevealFlow = searchParams.get('from') === 'reveal'
   const isHome = pathname === '/'
   const lightTone = isHome && !compact
   const logoSrc = org.logo_path ? mediaUrl(org.logo_path) : DEFAULT_BRAND_LOGO_URL
@@ -51,7 +51,7 @@ export function StoreHeader({
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  if (isRevealCheckout) {
+  if (isRevealFlow) {
     return (
       <header className="border-b border-neutral-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-8">

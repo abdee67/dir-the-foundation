@@ -24,6 +24,7 @@ interface PaymentProofFormProps {
   orderTotal: number
   paymentMethods: PaymentMethodConfig[]
   orgId: string
+  isRevealFlow?: boolean
 }
 
 const MAX_SIZE_MB = 5
@@ -35,6 +36,7 @@ export function PaymentProofForm({
   orderTotal,
   paymentMethods,
   orgId,
+  isRevealFlow = false,
 }: PaymentProofFormProps) {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -104,7 +106,7 @@ export function PaymentProofForm({
     }
 
     toast.success('Payment proof submitted! Your order is now under review.')
-    router.push(`/track?order=${orderNo}`)
+    router.push(`/track?order=${orderNo}${isRevealFlow ? '&from=reveal' : ''}`)
   }
 
   return (

@@ -6,10 +6,13 @@ import { getSingleStoreOrg } from '@/lib/store-org'
 import { getAdminClient } from '@/lib/supabase/admin'
 
 import { GuestCheckoutForm, type GuestCheckoutSettings } from '@/components/store/guest-checkout-form'
+import type { PageProps } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
-export default async function CheckoutPage() {
+export default async function CheckoutPage({ searchParams }: PageProps<Record<string, never>, { from?: string }>) {
+  const { from } = await searchParams
+  const isRevealFlow = from === 'reveal'
   const org = await getSingleStoreOrg()
   const settings = await getOrgSettings(org.id)
   const lang = settingStr(settings, 'localization.language') as Lang
@@ -37,7 +40,7 @@ export default async function CheckoutPage() {
           <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-neutral-500">DIR (ድር) THE FOUNDATION</p>
           <h1 className="sf-font-display mt-2 text-3xl tracking-[-0.02em] text-neutral-900 sm:text-5xl">{t('checkout', lang).toUpperCase()}</h1>
         </div>
-        <Link href="/cart" className="hidden border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black sm:inline-flex">
+        <Link href={isRevealFlow ? '/cart?from=reveal' : '/cart'} className="hidden border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black sm:inline-flex">
           Return to bag
         </Link>
       </div>

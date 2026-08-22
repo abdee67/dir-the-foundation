@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -70,6 +70,8 @@ function CheckoutSection({
 export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSettings }) {
   const { orgSlug } = settings
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isRevealFlow = searchParams.get('from') === 'reveal'
   const { items, subtotal, mounted, clear } = useCart()
   const [zoneQuote, setZoneQuote] = useState<DeliveryQuote | null>(null)
   const [zoneLoading, setZoneLoading] = useState(false)
@@ -107,7 +109,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
     }
 
     clear()
-    router.push(`/order/${result.data.orderNo}`)
+    router.push(`/order/${result.data.orderNo}${isRevealFlow ? '?from=reveal' : ''}`)
   }
 
   if (!mounted) return <div className="h-96" aria-hidden />
@@ -296,7 +298,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
             </button>
           </div>
 
-          <Link href="/cart" className="mt-4 inline-flex border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black">
+          <Link href={isRevealFlow ? '/cart?from=reveal' : '/cart'} className="mt-4 inline-flex border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black">
             Return to bag
           </Link>
         </aside>
