@@ -1,7 +1,7 @@
 export type DropStatus = 'draft' | 'scheduled' | 'active' | 'completed' | 'archived'
 export type DropPhase = 'teaser' | 'reveal' | 'store'
 export type DropTransitionType = 'automatic' | 'manual' | 'notification'
-export type DropWaitlistNotificationStatus = 'waiting' | 'sending' | 'sent' | 'failed'
+export type DropWaitlistNotificationStatus = 'waiting' | 'queued' | 'sent' | 'failed'
 
 export interface Drop {
   id: string
@@ -9,6 +9,7 @@ export interface Drop {
   drop_number: string
   name: string
   description: string | null
+  launch_message: string | null
   status: DropStatus
   current_phase: DropPhase
   teaser_hero_media_id: string | null
@@ -30,10 +31,12 @@ export interface Drop {
 export interface DropWaitlistEntry {
   id: string
   drop_id: string
-  email: string
+  phone_number: string
   notification_status: DropWaitlistNotificationStatus
   notified_at: string | null
-  notification_error: string | null
+  provider_message_id: string | null
+  provider_campaign_id: string | null
+  last_error: string | null
   created_at: string
 }
 

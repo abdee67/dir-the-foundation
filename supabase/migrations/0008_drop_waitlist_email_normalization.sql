@@ -4,3 +4,4 @@
 
 create unique index if not exists drop_waitlist_drop_lower_email_key
   on public.drop_waitlist (drop_id, lower(email));
+seed

@@ -86,6 +86,7 @@ export interface Product {
   slug: string
   description: string | null
   brand: string | null
+  color: string | null
   category_id: string | null
   status: ProductStatus
   price: number
@@ -240,6 +241,7 @@ export interface OrderItem {
   unit_price: number
   qty: number
   line_total: number
+  configuration: Record<string, unknown>
   created_at: string
 }
 
