@@ -96,8 +96,8 @@ export async function activateDropAction(id: string): Promise<ActionResult<{ rep
   const drop = dropRaw as Drop | null
   if (lookupError || !drop) return { ok: false, error: 'Drop not found.' }
   if (drop.status === 'archived' || drop.status === 'completed') return { ok: false, error: 'Archived or completed drops cannot be activated.' }
-  if (!drop.teaser_hero_media_id || !drop.teaser_starts_at || !drop.teaser_ends_at || !drop.store_starts_at) {
-    return { ok: false, error: 'Add the teaser image and all lifecycle dates before activation.' }
+  if (!drop.teaser_hero_media_id || !drop.teaser_starts_at || !drop.teaser_ends_at || !drop.store_starts_at || !drop.launch_message?.trim()) {
+    return { ok: false, error: 'Add the teaser image, SMS launch message, and all lifecycle dates before activation.' }
   }
 
   const { data: activation, error: activationError } = await supabase.rpc('activate_drop', { p_drop_id: id, p_actor_id: ctx.user.id }).single()
@@ -164,7 +164,7 @@ export async function resumeDropAutomationAction(id: string): Promise<ActionResu
   }
 }
 
-export async function sendDropLaunchNotificationAction(id: string, retryFailed = false): Promise<ActionResult<{ sent: number; failed: number }>> {
+export async function sendDropLaunchNotificationAction(id: string, retryFailed = false): Promise<ActionResult<{ queued: number; failed: number; campaignId: string }>> {
   const ctx = await requireOrg()
   requireRole(ctx, 'admin')
   const supabase = getAdminClient()

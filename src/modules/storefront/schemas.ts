@@ -43,6 +43,14 @@ export const cartItemInputSchema = z.object({
   productId: z.string().uuid(),
   variantId: z.string().uuid().nullable().optional(),
   qty: z.number().int().positive().max(999),
+  reveal: z.object({
+    dropId: z.string().uuid(),
+    purchaseType: z.enum(['buy_now', 'pre_order']),
+    fit: z.string().trim().max(40).nullable(),
+    color: z.string().trim().max(40).nullable(),
+    size: z.string().trim().max(40).nullable(),
+    customizationText: z.string().trim().max(10).nullable(),
+  }).optional(),
 })
 export type CartItemInput = z.infer<typeof cartItemInputSchema>
 

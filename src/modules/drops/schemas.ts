@@ -10,6 +10,7 @@ export const dropInputSchema = z
     drop_number: z.string().trim().min(3, 'Drop number is required').max(40).regex(/^[A-Za-z0-9][A-Za-z0-9 -]*$/, 'Use letters, numbers, spaces, or hyphens only'),
     name: z.string().trim().min(2, 'Drop name is required').max(160),
     description: z.string().trim().max(1000).nullable(),
+    launch_message: z.string().trim().min(1, 'Add the SMS launch message.').max(480).nullable(),
     status: z.enum(DROP_STATUS_VALUES),
     teaser_hero_media_id: z.string().uuid().nullable(),
     teaser_starts_at: optionalIsoDate,

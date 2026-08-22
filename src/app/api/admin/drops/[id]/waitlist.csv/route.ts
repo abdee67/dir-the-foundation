@@ -15,11 +15,11 @@ export async function GET(_request: Request, { params }: Pick<PageProps<{ id: st
   if (!drop) return new Response('Not found', { status: 404 })
   const { data } = await supabase
     .from('drop_waitlist')
-    .select('email, notification_status, notified_at, created_at')
+    .select('phone_number, notification_status, provider_message_id, provider_campaign_id, notified_at, last_error, created_at')
     .eq('drop_id', id)
     .order('created_at', { ascending: false })
-  const lines = ['email,notification_status,notified_at,joined_at']
-  for (const row of data ?? []) lines.push([row.email, row.notification_status, row.notified_at, row.created_at].map((value) => csvCell(value as string | null)).join(','))
+  const lines = ['phone_number,notification_status,provider_message_id,provider_campaign_id,notified_at,last_error,joined_at']
+  for (const row of data ?? []) lines.push([row.phone_number, row.notification_status, row.provider_message_id, row.provider_campaign_id, row.notified_at, row.last_error, row.created_at].map((value) => csvCell(value as string | null)).join(','))
   return new Response(lines.join('\n'), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
