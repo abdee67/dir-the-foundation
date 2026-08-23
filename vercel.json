@@ -1,8 +1,1 @@
-{
-  "crons": [
-    {
-      "path": "/api/internal/drops/transitions",
-      "schedule": "*/5 * * * *"
-    }
-  ]
-}
+{}

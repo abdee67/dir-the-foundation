@@ -7,7 +7,7 @@ import { processAutomaticDropTransitions } from '@/modules/drops/service'
  * Authorization: Bearer $CRON_SECRET (or $DROP_CRON_SECRET). No browser route can run this.
  */
 async function processTransitions(request: Request) {
-  const secret = process.env.CRON_SECRET ?? process.env.DROP_CRON_SECRET
+  const secret = process.env.DIR_DROP_CRON_SECRET
   const authorization = request.headers.get('authorization')
   if (!secret || authorization !== `Bearer ${secret}`) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
