@@ -16,6 +16,7 @@ import {
   Receipt,
   ScrollText,
   Settings,
+  Sparkles,
   ShoppingCart,
   Star,
   Store,
@@ -47,6 +48,7 @@ export const ICON_MAP: Record<string, LucideIcon> = {
   UserCog,
   ScrollText,
   Settings,
+  Sparkles,
 }
 
 export function getIcon(name: string): LucideIcon {

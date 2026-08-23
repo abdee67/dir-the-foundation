@@ -26,6 +26,7 @@ export interface CreateOrderItemInput {
   image_path?: string | null
   unit_price: number // paisa, server-verified
   qty: number
+  configuration?: Record<string, unknown> | null
 }
 
 export interface CreateOrderInput {
@@ -336,6 +337,7 @@ export async function createOrderCore(input: CreateOrderInput): Promise<CreateOr
     unit_price: item.unit_price,
     qty: item.qty,
     line_total: item.unit_price * item.qty,
+    configuration: item.configuration ?? {},
   }))
 
   const { error: itemsError } = await admin.from('order_items').insert(itemRows)

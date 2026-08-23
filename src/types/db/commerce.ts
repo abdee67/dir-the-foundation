@@ -86,6 +86,7 @@ export interface Product {
   slug: string
   description: string | null
   brand: string | null
+  color: string | null
   category_id: string | null
   status: ProductStatus
   price: number
@@ -115,6 +116,7 @@ export interface ProductVariant {
   compare_at_price: number | null
   stock_qty: number
   options: Record<string, unknown>
+  is_active: boolean
   is_default: boolean
   position: number
   created_at: string
@@ -240,6 +242,7 @@ export interface OrderItem {
   unit_price: number
   qty: number
   line_total: number
+  configuration: Record<string, unknown>
   created_at: string
 }
 

@@ -34,11 +34,19 @@ export function CartLineItem({ item }: { item: CartItem; lang?: string }) {
                 Size: {item.variantName}
               </p>
             )}
+            {item.color && <p className="mt-0.5 text-[11px] uppercase tracking-wide text-neutral-500">Color: {item.color}</p>}
+            {item.reveal && (
+              <p className="mt-1 text-[10px] uppercase tracking-wide text-neutral-500">
+                {[item.reveal.fit, item.reveal.color, item.reveal.size].filter(Boolean).join(' · ') || 'Reveal selection'}
+                {item.reveal.purchaseType === 'pre_order' ? ' · Pre-order' : ''}
+                {item.reveal.customizationText ? ` · ${item.reveal.customizationText}` : ''}
+              </p>
+            )}
           </div>
           <button
             type="button"
             aria-label="Remove item"
-            onClick={() => remove(item.productId, item.variantId)}
+            onClick={() => remove(item.productId, item.variantId, item.lineKey)}
             className="p-1 text-neutral-400 transition-colors hover:text-black"
           >
             <X className="size-3.5" />
@@ -49,7 +57,7 @@ export function CartLineItem({ item }: { item: CartItem; lang?: string }) {
           <QtyStepper
             size="sm"
             value={item.qty}
-            onChange={(qty) => setQty(item.productId, item.variantId, qty)}
+            onChange={(qty) => setQty(item.productId, item.variantId, qty, item.lineKey)}
           />
           <span className="shrink-0 text-sm font-semibold tabular-nums text-neutral-900">
             {formatMoney(item.unitPrice * item.qty)}

@@ -25,7 +25,7 @@ export default async function EditProductPage({ params }: PageProps<{ id: string
 
   const [productResult, variantsResult, imagesResult, categoriesResult] = await Promise.all([
     supabase.from('products').select('*').eq('id', id).eq('org_id', ctx.org.id).single(),
-    supabase.from('product_variants').select('*').eq('product_id', id).order('position'),
+    supabase.from('product_variants').select('*').eq('product_id', id).eq('is_active', true).order('position'),
     supabase.from('product_images').select('*, media:media(path)').eq('product_id', id).order('position'),
     supabase.from('categories').select('id, name, parent_id').eq('org_id', ctx.org.id).order('name'),
   ])

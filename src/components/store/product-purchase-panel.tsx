@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import type { ProductVariant } from '@/types/db'
 
 import { useCart } from './cart-context'
+import { ProductColorSizeSelector } from './product-color-size-selector'
 import { QtyStepper } from './qty-stepper'
 import { RestockCountdown } from './restock-countdown'
 
@@ -21,6 +22,7 @@ export interface PurchaseProduct {
   stock_qty: number
   low_stock_threshold: number
   allow_backorder: boolean
+  color?: string | null
   restock_at?: string | null
 }
 
@@ -50,6 +52,19 @@ export function ProductPurchasePanel({
   const maxQty = product.track_stock && !product.allow_backorder ? Math.max(stock, 1) : 999
   const hasDiscount = compareAt != null && compareAt > price
 
+  // Extract color and size from selected variant for cart
+  const selectedColor = useMemo(() => {
+    if (!selected) return product.color ?? null
+    const opts = selected.options as Record<string, string> | null
+    return opts?.color ?? product.color ?? null
+  }, [selected, product.color])
+
+  const selectedSize = useMemo(() => {
+    if (!selected) return null
+    const opts = selected.options as Record<string, string> | null
+    return opts?.size ?? selected.name ?? null
+  }, [selected])
+
   function handleAdd() {
     if (variants.length > 0 && !variantId) {
       toast.error('Please select your size.')
@@ -61,7 +76,8 @@ export function ProductPurchasePanel({
       productId: product.id,
       variantId: selected?.id ?? null,
       name: product.name,
-      variantName: (selected?.options as Record<string,string> | null)?.size ?? selected?.name ?? null,
+      variantName: selectedSize,
+      color: selectedColor,
       unitPrice: price,
       image,
       qty,
@@ -88,44 +104,25 @@ export function ProductPurchasePanel({
         )}
       </div>
 
-      {/* Size Variant Selector */}
+      {product.color && !variants.some((v) => {
+        const opts = v.options as Record<string, string> | null
+        return Boolean(opts?.color)
+      }) && (
+        <p className="text-[11px] font-semibold tracking-[0.14em] uppercase text-neutral-500">
+          Color: <span className="font-medium text-neutral-900">{product.color}</span>
+        </p>
+      )}
+
+      {/* Color + Size Variant Selector */}
       {variants.length > 0 && (
-        <div className="flex flex-col space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold tracking-[0.14em] uppercase text-neutral-500">
-              Select Size:
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.12em] text-neutral-400">
-              Available sizes
-            </span>
-          </div>
-
-          <div className="flex flex-wrap gap-2.5">
-            {variants.map((v) => {
-              const sizeLabel = (v.options as Record<string, string> | null)?.size ?? v.name
-              const variantOut = product.track_stock && v.stock_qty <= 0 && !product.allow_backorder
-              const isSelected = v.id === variantId
-
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  disabled={variantOut}
-                  onClick={() => setVariantId(v.id)}
-                  className={cn(
-                    'flex h-11 min-w-[48px] items-center justify-center border px-3 text-xs font-semibold tracking-wider transition-colors',
-                    isSelected
-                      ? 'border-black bg-black text-white'
-                      : 'border-neutral-200 bg-white text-neutral-900 hover:border-black',
-                    variantOut && 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300 line-through opacity-60',
-                  )}
-                >
-                  {sizeLabel}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        <ProductColorSizeSelector
+          variants={variants}
+          trackStock={product.track_stock}
+          allowBackorder={product.allow_backorder}
+          lowStockThreshold={product.low_stock_threshold}
+          selectedVariantId={variantId}
+          onVariantSelect={setVariantId}
+        />
       )}
 
       {/* Quantity & Stock Warnings */}
@@ -141,7 +138,7 @@ export function ProductPurchasePanel({
       )}
       {product.track_stock && stock > 0 && stock <= product.low_stock_threshold && (
         <p className="text-[11px] font-medium uppercase tracking-wider text-amber-800">
-          Low Stock: Only {stock} remaining in this size
+          Low Stock: Only {stock} remaining{selectedSize ? ` in ${selectedSize}` : ''}
         </p>
       )}
 

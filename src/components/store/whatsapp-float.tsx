@@ -1,11 +1,15 @@
+'use client'
+
 import { MessageCircle } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 import { whatsappHref } from './store-links'
 
 /** settings.storefront.whatsapp_number — fixed bottom-right float button. Renders nothing when unset. */
 export function WhatsappFloat({ number }: { number: string }) {
+  const searchParams = useSearchParams()
   const href = number ? whatsappHref(number) : null
-  if (!href) return null
+  if (!href || searchParams.get('from') === 'reveal') return null
 
   return (
     <a

@@ -21,8 +21,11 @@ interface PaymentMethodConfig {
 
 type OrderRow = Pick<Order, 'id' | 'order_no' | 'status' | 'payment_status' | 'total' | 'customer_name'>
 
-export default async function PaymentPage({ params }: PageProps<{ orderNo: string }>) {
+export default async function PaymentPage({ params, searchParams }: PageProps<{ orderNo: string }, { from?: string }>) {
   const { orderNo } = await params
+  const { from } = await searchParams
+  const isRevealFlow = from === 'reveal'
+  const trackHref = `/track?order=${orderNo}${isRevealFlow ? '&from=reveal' : ''}`
   const org = await getSingleStoreOrg()
   const settings = await getOrgSettings(org.id)
   const paymentMethods = getSetting<PaymentMethodConfig[]>(settings, 'payments.instructions') ?? []
@@ -58,7 +61,7 @@ export default async function PaymentPage({ params }: PageProps<{ orderNo: strin
           <span className="font-mono font-semibold">{order.order_no}</span>. Your order is under review.
         </p>
         <a
-          href={`/track?order=${order.order_no}`}
+          href={trackHref}
           className="mt-7 inline-flex h-12 items-center justify-center border border-black bg-black px-6 text-[11px] font-semibold tracking-[0.14em] uppercase text-white transition-colors hover:bg-neutral-800"
         >
           Track Your Order
@@ -77,7 +80,7 @@ export default async function PaymentPage({ params }: PageProps<{ orderNo: strin
           This order ({order.order_no}) is not currently awaiting payment proof.
         </p>
         <a
-          href={`/track?order=${order.order_no}`}
+          href={trackHref}
           className="mt-7 inline-flex h-12 items-center justify-center border border-black px-6 text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors hover:bg-black hover:text-white"
         >
           Track your order
@@ -107,6 +110,7 @@ export default async function PaymentPage({ params }: PageProps<{ orderNo: strin
         orderTotal={order.total}
         paymentMethods={paymentMethods}
         orgId={org.id}
+        isRevealFlow={isRevealFlow}
       />
     </div>
   )

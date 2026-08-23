@@ -7,6 +7,7 @@ export const MODULE_KEY_VALUES = [
   'orders',
   'cms',
   'storefront',
+  'drops',
 ] as const
 
 export const orgProfileSchema = z.object({

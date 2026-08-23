@@ -84,6 +84,7 @@ interface PricedVariantRow {
   name: string
   price: number
   stock_qty: number
+  options: Record<string, unknown>
 }
 
 export interface PricedLine {
@@ -99,6 +100,7 @@ export interface PricedLine {
   allowBackorder: boolean
   categoryId: string | null
   imagePath: string | null
+  variantOptions: Record<string, unknown>
 }
 
 async function getPrimaryImagePaths(orgId: string, productIds: string[]): Promise<Record<string, string | null>> {
@@ -155,8 +157,9 @@ async function priceCartItems(
   if (variantIds.length > 0) {
     const { data: variantRows, error: variantError } = await supabase
       .from('product_variants')
-      .select('id, product_id, name, price, stock_qty')
+      .select('id, product_id, name, price, stock_qty, options, is_active')
       .eq('org_id', orgId)
+      .eq('is_active', true)
       .in('id', variantIds)
     if (variantError || !variantRows) return { ok: false, error: 'Could not load variant prices.' }
     variants = new Map((variantRows as PricedVariantRow[]).map((v) => [v.id, v]))
@@ -176,6 +179,26 @@ async function priceCartItems(
       return { ok: false, error: 'One of the items in your cart is no longer available.' }
     }
 
+    // Validate color+size combination if variant has both attributes
+    if (variant) {
+      const opts = variant.options as Record<string, string> | null
+      const hasColor = Boolean(opts?.color)
+      const hasSize = Boolean(opts?.size)
+
+      if (hasColor && hasSize) {
+        // Color+size variant: both must be present and valid
+        const color = opts?.color?.trim()
+        const size = opts?.size?.trim()
+
+        if (!color || !size) {
+          return {
+            ok: false,
+            error: `Invalid variant configuration for ${product.name}. Please refresh and try again.`,
+          }
+        }
+      }
+    }
+
     const unitPrice = variant ? variant.price : product.price
     const stockQty = variant ? variant.stock_qty : product.stock_qty
 
@@ -192,6 +215,7 @@ async function priceCartItems(
       allowBackorder: product.allow_backorder,
       categoryId: product.category_id,
       imagePath: imagePaths[product.id] ?? null,
+      variantOptions: variant?.options ?? {},
     })
   }
 
@@ -200,6 +224,42 @@ async function priceCartItems(
   const categoryIds = [...new Set(lines.map((l) => l.categoryId).filter((c): c is string => Boolean(c)))]
 
   return { ok: true, data: { lines, subtotal, productIds: outProductIds, categoryIds } }
+}
+
+function optionValue(options: Record<string, unknown>, key: 'fit' | 'color' | 'size'): string | null {
+  const value = options[key]
+  return typeof value === 'string' ? value : null
+}
+
+/** Revalidates launch-only choices after canonical product/variant pricing. */
+async function validateRevealLines(orgId: string, items: CartItemInput[], lines: PricedLine[]): Promise<ActionResult<Record<string, unknown>[]>> {
+  const revealEntries = items.map((item, index) => ({ item, line: lines[index] })).filter((entry) => entry.item.reveal)
+  if (revealEntries.length === 0) return { ok: true, data: lines.map(() => ({})) }
+  const dropIds = [...new Set(revealEntries.map((entry) => entry.item.reveal!.dropId))]
+  const supabase = getAdminClient()
+  const [{ data: drops, error }, { data: revealVariants, error: revealVariantError }] = await Promise.all([
+    supabase.from('drops').select('id, reveal_product_id, status, current_phase').eq('org_id', orgId).in('id', dropIds),
+    supabase.from('product_variants').select('product_id').eq('org_id', orgId).in('product_id', [...new Set(revealEntries.map((entry) => entry.line.productId))]),
+  ])
+  if (error || revealVariantError) return { ok: false, error: 'The reveal is temporarily unavailable. Please try again.' }
+  const activeDrops = new Map((drops ?? []).filter((drop) => drop.status === 'active' && drop.current_phase === 'reveal').map((drop) => [drop.id, drop]))
+  const productsWithVariants = new Set((revealVariants ?? []).map((variant) => variant.product_id))
+  const configurations: Record<string, unknown>[] = []
+  for (let index = 0; index < items.length; index += 1) {
+    const reveal = items[index].reveal
+    const line = lines[index]
+    if (!reveal) { configurations.push({}); continue }
+    const drop = activeDrops.get(reveal.dropId)
+    if (!drop || drop.reveal_product_id !== line.productId || (productsWithVariants.has(line.productId) && !line.variantId)) return { ok: false, error: 'This reveal selection is no longer available.' }
+    const fit = optionValue(line.variantOptions, 'fit')
+    const color = optionValue(line.variantOptions, 'color')
+    const size = optionValue(line.variantOptions, 'size')
+    if ((reveal.fit && reveal.fit !== fit) || (reveal.color && reveal.color !== color) || (reveal.size && reveal.size !== size)) return { ok: false, error: 'Your reveal selection changed. Please choose an available option again.' }
+    if (reveal.purchaseType === 'pre_order' && reveal.customizationText && reveal.customizationText.length > 10) return { ok: false, error: 'Customization must be 10 characters or fewer.' }
+    if (reveal.purchaseType === 'buy_now' && reveal.customizationText) return { ok: false, error: 'Customization is only available for pre-orders.' }
+    configurations.push({ drop_id: reveal.dropId, purchase_type: reveal.purchaseType, fit, color, size, customization_text: reveal.customizationText ?? null })
+  }
+  return { ok: true, data: configurations }
 }
 
 // ===============================================================================================
@@ -250,6 +310,11 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
     if (!priced.ok) return priced
     if (!priced.data) return { ok: false, error: 'Could not price your cart.' }
     const { lines, subtotal } = priced.data
+    const revealValidation = await validateRevealLines(org.id, data.items, lines)
+    if (!revealValidation.ok || !revealValidation.data) {
+      return { ok: false, error: revealValidation.ok ? 'Could not validate the reveal selection.' : revealValidation.error }
+    }
+    const revealConfigurations = revealValidation.data
 
     for (const line of lines) {
       if (line.trackStock && !line.allowBackorder && line.qty > Math.max(line.stockQty, 0)) {
@@ -280,7 +345,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
       address: { line1: data.address.line1, area: data.address.area ?? null, district: data.address.district },
       delivery_zone_id: zone.zoneId,
       delivery_charge: zone.charge,
-      items: lines.map((l) => ({
+      items: lines.map((l, index) => ({
         product_id: l.productId,
         variant_id: l.variantId,
         product_name: l.name,
@@ -288,6 +353,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
         image_path: l.imagePath,
         unit_price: l.unitPrice,
         qty: l.qty,
+        configuration: revealConfigurations[index],
       })),
       discount_code: null,
       discount_amount: 0,

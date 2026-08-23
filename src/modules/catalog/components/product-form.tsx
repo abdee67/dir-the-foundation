@@ -29,6 +29,12 @@ import { productFormSchema, type ProductActionInput, type ProductFormValues } fr
 import { ImageGallery, fromImageRow, toImageRow, type ImageRow } from './image-gallery'
 import { VariantEditor, fromVariantRow, newVariantRow, toVariantRow, type VariantRow } from './variant-editor'
 import { SizeStockEditor, sizeStocksToVariantInputs, variantsToSizeStocks } from './size-stock-editor'
+import {
+  ColorSizeMatrixEditor,
+  colorSizeMatrixToVariantInputs,
+  variantsToColorSizeMatrix,
+  type ColorSizeStock,
+} from './color-size-matrix-editor'
 import type { CategoryOption } from '../category-options'
 
 interface ProductFormProps {
@@ -48,6 +54,7 @@ function toFormValues(product?: Product): ProductFormValues {
       slug: '',
       description: '',
       brand: '',
+      color: '',
       category_id: null,
       status: 'draft',
       price: '',
@@ -68,6 +75,7 @@ function toFormValues(product?: Product): ProductFormValues {
     slug: product.slug,
     description: product.description ?? '',
     brand: product.brand ?? '',
+    color: product.color ?? '',
     category_id: product.category_id,
     status: product.status,
     price: fromPaisa(product.price).toFixed(2),
@@ -93,6 +101,7 @@ function toActionInput(values: ProductFormValues): ProductActionInput {
     slug: values.slug,
     description: values.description?.trim() ? values.description.trim() : null,
     brand: values.brand?.trim() ? values.brand.trim() : null,
+    color: values.color?.trim() ? values.color.trim() : null,
     category_id: values.category_id,
     status: values.status,
     price: toPaisa(values.price),
@@ -122,9 +131,24 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
   const [hasVariants, setHasVariants] = useState((variants?.length ?? 0) > 0)
   const [imageRows, setImageRows] = useState<ImageRow[]>(() => (images ?? []).map(toImageRow))
 
-  // Clothing-store size stock state
+  // Determine variant mode: 'size-only' (legacy) or 'color-size' (new multi-dimensional)
+  const hasColorVariants = (variants ?? []).some((v) => {
+    const opts = v.options as Record<string, string> | null
+    return Boolean(opts?.color)
+  })
+
+  const [variantMode, setVariantMode] = useState<'size-only' | 'color-size'>(() =>
+    hasColorVariants ? 'color-size' : 'size-only'
+  )
+
+  // Size-only state (legacy)
   const [sizeStocks, setSizeStocks] = useState<Record<string, number>>(() =>
     variantsToSizeStocks(variants ?? []),
+  )
+
+  // Color×Size state (new)
+  const [colorSizeMatrix, setColorSizeMatrix] = useState<ColorSizeStock[]>(() =>
+    variantsToColorSizeMatrix(variants ?? []),
   )
 
   const form = useForm<ProductFormValues>({
@@ -153,14 +177,17 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
 
       const productId = mode === 'create' ? result.data!.id : product!.id
 
-      // Build variant inputs from size stocks (clothing store always uses size variants)
+      // Build variant inputs based on variant mode
       const priceInPaisa = toPaisa(values.price)
-      const sizeVariantInputs = sizeStocksToVariantInputs(sizeStocks, variants ?? [], priceInPaisa)
+      const variantInputs =
+        variantMode === 'color-size'
+          ? colorSizeMatrixToVariantInputs(colorSizeMatrix, variants ?? [], priceInPaisa)
+          : sizeStocksToVariantInputs(sizeStocks, variants ?? [], priceInPaisa)
 
       const [variantsResult, imagesResult] = await Promise.all([
         saveVariants({
           product_id: productId,
-          variants: sizeVariantInputs,
+          variants: variantInputs,
         }),
         saveImages({
           product_id: productId,
@@ -234,7 +261,7 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 sm:grid-cols-3">
                   <FormField
                     control={form.control}
                     name="brand"
@@ -243,6 +270,19 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                         <FormLabel>Brand</FormLabel>
                         <FormControl>
                           <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Color</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Espresso" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -291,10 +331,47 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
 
             <Card className="gap-4 p-4">
               <CardHeader className="flex-row items-center justify-between p-0">
-                <CardTitle>Size &amp; Stock</CardTitle>
+                <CardTitle>Variants &amp; Stock</CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
-                <SizeStockEditor value={sizeStocks} onChange={setSizeStocks} />
+              <CardContent className="flex flex-col gap-4 p-0">
+                {/* Variant Mode Selector */}
+                <div className="flex flex-col gap-2 rounded-md border border-dashed p-3">
+                  <p className="text-xs font-medium text-muted-foreground">Variant Mode</p>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={variantMode === 'size-only' ? 'default' : 'outline'}
+                      onClick={() => {
+                        setVariantMode('size-only')
+                        if (colorSizeMatrix.length === 0) setSizeStocks({})
+                      }}
+                      disabled={colorSizeMatrix.length > 0}
+                    >
+                      Size Only
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={variantMode === 'color-size' ? 'default' : 'outline'}
+                      onClick={() => setVariantMode('color-size')}
+                    >
+                      Color × Size
+                    </Button>
+                  </div>
+                  {colorSizeMatrix.length > 0 && (
+                    <p className="text-xs text-amber-600">
+                      Remove all color rows before switching this product to size-only variants.
+                    </p>
+                  )}
+                </div>
+
+                {/* Editor based on mode */}
+                {variantMode === 'size-only' ? (
+                  <SizeStockEditor value={sizeStocks} onChange={setSizeStocks} />
+                ) : (
+                  <ColorSizeMatrixEditor value={colorSizeMatrix} onChange={setColorSizeMatrix} />
+                )}
               </CardContent>
             </Card>
           </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 
 import { mediaUrl } from '@/lib/media-url'
@@ -29,6 +29,8 @@ export function StoreHeader({
   const [searchOpen, setSearchOpen] = useState(false)
   const [compact, setCompact] = useState(false)
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const isRevealFlow = searchParams.get('from') === 'reveal'
   const isHome = pathname === '/'
   const lightTone = isHome && !compact
   const logoSrc = org.logo_path ? mediaUrl(org.logo_path) : DEFAULT_BRAND_LOGO_URL
@@ -48,6 +50,20 @@ export function StoreHeader({
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  if (isRevealFlow) {
+    return (
+      <header className="border-b border-neutral-200 bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-8">
+          <Link href="/" className="group flex flex-col items-center justify-center text-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logoSrc} alt={org.name} className="h-12 w-auto max-w-52 object-contain brightness-0 sm:h-14 sm:max-w-64" />
+          </Link>
+          <CartButton orgSlug={org.slug} />
+        </div>
+      </header>
+    )
+  }
 
   return (
     <>

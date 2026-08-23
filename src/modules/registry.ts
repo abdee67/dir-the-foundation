@@ -4,6 +4,7 @@ import { config as catalog } from './catalog/module.config'
 import { config as orders } from './orders/module.config'
 import { config as cms } from './cms/module.config'
 import { config as storefront } from './storefront/module.config'
+import { config as drops } from './drops/module.config'
 
 /** Lookup by key. */
 export const MODULES: Partial<Record<ModuleKey, ModuleDef>> = {
@@ -11,6 +12,7 @@ export const MODULES: Partial<Record<ModuleKey, ModuleDef>> = {
   orders,
   cms,
   storefront,
+  drops,
 }
 
 /** Canonical sidebar/iteration order (distinct from MODULES' key order). */
@@ -19,6 +21,7 @@ export const MODULE_LIST: ModuleDef[] = [
   orders,
   cms,
   storefront,
+  drops,
 ]
 
 /**

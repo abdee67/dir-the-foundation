@@ -67,6 +67,7 @@ export async function createProduct(input: ProductActionInput): Promise<ActionRe
         slug: data.slug,
         description: data.description,
         brand: data.brand,
+        color: data.color,
         category_id: data.category_id,
         status: data.status,
         price: data.price,
@@ -123,6 +124,7 @@ export async function updateProduct(
         slug: data.slug,
         description: data.description,
         brand: data.brand,
+        color: data.color,
         category_id: data.category_id,
         status: data.status,
         price: data.price,
@@ -201,85 +203,29 @@ export async function saveVariants(input: SaveVariantsInput): Promise<ActionResu
   if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) }
   const { product_id, variants } = parsed.data
 
+  const colorSizeKeys = new Set<string>()
+  for (const variant of variants) {
+    const color = variant.options.color?.trim()
+    const size = variant.options.size?.trim()
+    if (color && !size) return { ok: false, error: 'Color variants must include a size.' }
+    if (!color || !size) continue
+
+    const key = `${color.toLocaleLowerCase()}\u0000${size.toLocaleUpperCase()}`
+    if (colorSizeKeys.has(key)) return { ok: false, error: `Duplicate color and size combination: ${color} / ${size}.` }
+    colorSizeKeys.add(key)
+  }
+
   try {
     const supabase = await getServerClient()
 
-    const { data: product } = await supabase
-      .from('products')
-      .select('id')
-      .eq('id', product_id)
-      .eq('org_id', ctx.org.id)
-      .single()
-    if (!product) return { ok: false, error: 'Product not found' }
+    const { error } = await supabase.rpc('replace_product_variants', {
+      p_org_id: ctx.org.id,
+      p_product_id: product_id,
+      p_variants: variants,
+    })
+    if (error) return { ok: false, error: error.message }
 
-    const { data: existing, error: existingError } = await supabase
-      .from('product_variants')
-      .select('id')
-      .eq('product_id', product_id)
-    if (existingError) return { ok: false, error: existingError.message }
-
-    const existingIds = new Set((existing ?? []).map((v) => v.id as string))
-    const keepIds = new Set(variants.filter((v) => v.id).map((v) => v.id as string))
-    const removeIds = [...existingIds].filter((vid) => !keepIds.has(vid))
-
-    if (removeIds.length) {
-      const { error: delError } = await supabase.from('product_variants').delete().in('id', removeIds)
-      if (delError) return { ok: false, error: delError.message }
-    }
-
-    const toInsert = variants
-      .filter((v) => !v.id)
-      .map((v, i) => ({
-        org_id: ctx.org.id,
-        product_id,
-        name: v.name,
-        price: v.price,
-        compare_at_price: v.compare_at_price,
-        stock_qty: v.stock_qty,
-        options: v.options,
-        is_default: v.is_default,
-        position: v.position ?? i,
-      }))
-    if (toInsert.length) {
-      const { error: insError } = await supabase.from('product_variants').insert(toInsert)
-      if (insError) return { ok: false, error: insError.message }
-    }
-
-    const toUpdate = variants.filter((v) => v.id)
-    for (const v of toUpdate) {
-      const { error: updError } = await supabase
-        .from('product_variants')
-        .update({
-          name: v.name,
-          price: v.price,
-          compare_at_price: v.compare_at_price,
-          stock_qty: v.stock_qty,
-          options: v.options,
-          is_default: v.is_default,
-          position: v.position,
-        })
-        .eq('id', v.id as string)
-        .eq('product_id', product_id)
-      if (updError) return { ok: false, error: updError.message }
-    }
-
-    // Clothing inventory is tracked per size variant; keep the parent product
-    // quantity as the aggregate so admin lists and stock checks stay accurate.
-    const { data: variantTotals, error: totalsError } = await supabase
-      .from('product_variants')
-      .select('stock_qty')
-      .eq('org_id', ctx.org.id)
-      .eq('product_id', product_id)
-    if (totalsError) return { ok: false, error: totalsError.message }
-    const totalStock = (variantTotals ?? []).reduce((sum, row) => sum + (row.stock_qty ?? 0), 0)
-    const { error: productStockError } = await supabase
-      .from('products')
-      .update({ stock_qty: totalStock })
-      .eq('id', product_id)
-      .eq('org_id', ctx.org.id)
-    if (productStockError) return { ok: false, error: productStockError.message }
-
-    audit(ctx, 'update', 'product_variants', product_id, { count: existingIds.size }, { count: variants.length })
+    audit(ctx, 'update', 'product_variants', product_id, undefined, { count: variants.length })
     revalidatePath(`/admin/products/${product_id}`)
     revalidatePath('/admin/products')
 

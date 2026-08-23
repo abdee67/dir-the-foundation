@@ -39,14 +39,17 @@ interface SaleCountdownProps {
 }
 
 export function SaleCountdown({ saleEndsAt, variant = 'full' }: SaleCountdownProps) {
-  const [time, setTime] = useState<TimeRemaining>(() => calcRemaining(saleEndsAt))
+  // Start with zeros to match server/client — real values arrive in useEffect.
+  const [time, setTime] = useState<TimeRemaining>({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false })
+  const [hydrated, setHydrated] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    // Recalculate immediately in case of server/client hydration delta
-    setTime(calcRemaining(saleEndsAt))
+    const now = calcRemaining(saleEndsAt)
+    setTime(now)
+    setHydrated(true)
 
-    if (calcRemaining(saleEndsAt).expired) return
+    if (now.expired) return
 
     intervalRef.current = setInterval(() => {
       const next = calcRemaining(saleEndsAt)
@@ -61,6 +64,9 @@ export function SaleCountdown({ saleEndsAt, variant = 'full' }: SaleCountdownPro
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
   }, [saleEndsAt])
+
+  // Suppress rendering until the client effect has computed the real time.
+  if (!hydrated) return null
 
   if (time.expired) {
     return (

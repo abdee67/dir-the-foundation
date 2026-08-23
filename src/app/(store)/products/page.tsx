@@ -20,7 +20,7 @@ const PAGE_SIZE = 24
 
 type ProductRow = Pick<
   Product,
-  'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'tags' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder'
+  'id' | 'slug' | 'name' | 'price' | 'compare_at_price' | 'color' | 'tags' | 'track_stock' | 'stock_qty' | 'low_stock_threshold' | 'allow_backorder'
 > & { sale_ends_at?: string | null; restock_at?: string | null }
 
 interface VariantSizeRow {
@@ -67,6 +67,7 @@ export default async function ProductsPage({
     .from('product_variants')
     .select('product_id, stock_qty, options')
     .eq('org_id', org.id)
+    .eq('is_active', true)
 
   const variantSizes = (variantSizeRows ?? []) as VariantSizeRow[]
   const availableSizes = Array.from(
@@ -129,7 +130,7 @@ export default async function ProductsPage({
 
   let query = supabase
     .from('products')
-    .select('id, slug, name, price, compare_at_price, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at', {
+    .select('id, slug, name, price, compare_at_price, color, tags, track_stock, stock_qty, low_stock_threshold, allow_backorder, sale_ends_at, restock_at', {
       count: 'exact',
     })
     .eq('org_id', org.id)

@@ -9,7 +9,7 @@ insert into public.orgs (id, name, slug, vertical, plan, enabled_modules, curren
 values (
   '00000000-0000-0000-0000-000000000001',
   'DIR (ድር) THE FOUNDATION', 'dir-the-foundation', 'ecommerce', 'pro',
-  array['catalog','orders','cms','storefront']::text[],
+  array['catalog','orders','cms','storefront','drops']::text[],
   'ETB', 'ET', 'Africa/Addis_Ababa', '0911000000', 'hello@dirfoundation.et', 'Addis Ababa, Ethiopia', true
 )
 on conflict (id) do update set
@@ -37,23 +37,23 @@ insert into public.categories (id, org_id, name, slug, sort_order)
 values
   ('c0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Women''s Clothing', 'women', 1),
   ('c0000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Men''s Clothing', 'men', 2),
-  ('c0000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'Kids'' Clothing', 'kids', 3)
+  ('c0000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'Unisex'' Clothing', 'unisex', 3)
 on conflict (id) do update set name = excluded.name, slug = excluded.slug, sort_order = excluded.sort_order;
 
 -- Product stock_qty is the aggregate of the size-level quantities below.
-insert into public.products (id, org_id, name, slug, description, category_id, status, price, compare_at_price, tags, track_stock, stock_qty, position, sale_ends_at)
+insert if into public.products (id, org_id, name, slug, description, color, category_id, status, price, compare_at_price, tags, track_stock, stock_qty, position, sale_ends_at)
 values
-  ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Satin Wrap Dress', 'satin-wrap-dress', 'A fluid satin wrap dress with a softly defined waist and easy drape.', 'c0000000-0000-0000-0000-000000000001', 'active', 349900, 429900, array['SALE'], true, 25, 1, now() + interval '7 days'),
-  ('10000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Structured Knit Cardigan', 'structured-knit-cardigan', 'A refined knit layer with a clean shape for everyday styling.', 'c0000000-0000-0000-0000-000000000001', 'active', 289900, null, array['NEW'], true, 24, 2, null),
-  ('10000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'Pleated Midi Skirt', 'pleated-midi-skirt', 'A versatile pleated midi skirt with movement and an easy high waist.', 'c0000000-0000-0000-0000-000000000001', 'active', 239900, null, array['BEST SELLER'], true, 29, 3, null),
-  ('10000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'Oxford Cotton Shirt', 'oxford-cotton-shirt', 'A crisp cotton shirt cut for a relaxed, considered fit.', 'c0000000-0000-0000-0000-000000000002', 'active', 219900, null, array['NEW'], true, 32, 4, null),
-  ('10000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000001', 'Tailored Linen Trousers', 'tailored-linen-trousers', 'Breathable linen trousers with a clean straight-leg silhouette.', 'c0000000-0000-0000-0000-000000000002', 'active', 279900, null, array['ESSENTIAL'], true, 26, 5, null),
-  ('10000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000001', 'Heavyweight Jersey Tee', 'heavyweight-jersey-tee', 'A premium cotton jersey tee with a substantial feel and everyday shape.', 'c0000000-0000-0000-0000-000000000002', 'active', 149900, null, array['EVERYDAY'], true, 38, 6, null),
-  ('10000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000001', 'Kids Cloud Fleece Set', 'kids-cloud-fleece-set', 'A soft matching fleece set made for play, rest, and cool mornings.', 'c0000000-0000-0000-0000-000000000003', 'active', 189900, null, array['KIDS','NEW'], true, 23, 7, null),
-  ('10000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000001', 'Kids Everyday Cotton Dress', 'kids-everyday-cotton-dress', 'A comfortable cotton dress with an easy shape for every day.', 'c0000000-0000-0000-0000-000000000003', 'active', 159900, null, array['KIDS'], true, 26, 8, null),
-  ('10000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000001', 'Kids Mini Denim Jacket', 'kids-mini-denim-jacket', 'A light denim jacket designed for simple layering through the season.', 'c0000000-0000-0000-0000-000000000003', 'active', 209900, 239900, array['KIDS','SALE'], true, 22, 9, now() + interval '10 days')
+  ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Satin Wrap Dress', 'satin-wrap-dress', 'A fluid satin wrap dress with a softly defined waist and easy drape.', 'Midnight Black', 'c0000000-0000-0000-0000-000000000001', 'active', 349900, 429900, array['SALE'], true, 25, 1, now() + interval '7 days'),
+  ('10000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Structured Knit Cardigan', 'structured-knit-cardigan', 'A refined knit layer with a clean shape for everyday styling.', 'Oatmeal', 'c0000000-0000-0000-0000-000000000001', 'active', 289900, null, array['NEW'], true, 24, 2, null),
+  ('10000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'Pleated Midi Skirt', 'pleated-midi-skirt', 'A versatile pleated midi skirt with movement and an easy high waist.', 'Deep Olive', 'c0000000-0000-0000-0000-000000000001', 'active', 239900, null, array['BEST SELLER'], true, 29, 3, null),
+  ('10000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'Oxford Cotton Shirt', 'oxford-cotton-shirt', 'A crisp cotton shirt cut for a relaxed, considered fit.', 'Cloud White', 'c0000000-0000-0000-0000-000000000002', 'active', 219900, null, array['NEW'], true, 32, 4, null),
+  ('10000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000001', 'Tailored Linen Trousers', 'tailored-linen-trousers', 'Breathable linen trousers with a clean straight-leg silhouette.', 'Stone', 'c0000000-0000-0000-0000-000000000002', 'active', 279900, null, array['ESSENTIAL'], true, 26, 5, null),
+  ('10000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000001', 'Heavyweight Jersey Tee', 'heavyweight-jersey-tee', 'A premium cotton jersey tee with a substantial feel and everyday shape.', 'Charcoal', 'c0000000-0000-0000-0000-000000000002', 'active', 149900, null, array['EVERYDAY'], true, 38, 6, null),
+  ('10000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000001', 'Unisex Cloud Fleece Set', 'unisex-cloud-fleece-set', 'A soft matching fleece set made for play, rest, and cool mornings.', 'Sky Blue', 'c0000000-0000-0000-0000-000000000003', 'active', 189900, null, array['UNISEXS','NEW'], true, 23, 7, null),
+  ('10000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000001', 'Unisex Everyday Cotton Dress', 'unisex-everyday-cotton-dress', 'A comfortable cotton dress with an easy shape for every day.', 'Rose', 'c0000000-0000-0000-0000-000000000003', 'active', 159900, null, array['UNISEXS'], true, 26, 8, null),
+  ('10000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000001', 'Unisex Mini Denim Jacket', 'unisex-mini-denim-jacket', 'A light denim jacket designed for simple layering through the season.', 'Indigo', 'c0000000-0000-0000-0000-000000000003', 'active', 209900, 239900, array['UNISEXS','SALE'], true, 22, 9, now() + interval '10 days')
 on conflict (id) do update set
-  name = excluded.name, slug = excluded.slug, description = excluded.description, category_id = excluded.category_id,
+  name = excluded.name, slug = excluded.slug, description = excluded.description, color = excluded.color, category_id = excluded.category_id,
   status = excluded.status, price = excluded.price, compare_at_price = excluded.compare_at_price, tags = excluded.tags,
   track_stock = excluded.track_stock, stock_qty = excluded.stock_qty, position = excluded.position, sale_ends_at = excluded.sale_ends_at;
 
@@ -62,6 +62,7 @@ values
   ('11000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','S',349900,5,'{"size":"S"}',true,1),
   ('11000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','M',349900,9,'{"size":"M"}',false,2),
   ('11000000-0000-0000-0000-000000000003','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','L',349900,8,'{"size":"L"}',false,3),
+  ('11000000-0000-0000-0000-000000000004','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','XL',349900,3,'{"size":"XL"}',false,4),
   ('11000000-0000-0000-0000-000000000004','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','XL',349900,3,'{"size":"XL"}',false,4),
   ('11000000-0000-0000-0000-000000000005','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000002','S',289900,6,'{"size":"S"}',true,1),
   ('11000000-0000-0000-0000-000000000006','00000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000002','M',289900,8,'{"size":"M"}',false,2),
@@ -124,7 +125,7 @@ on conflict (id) do update set title = excluded.title, slug = excluded.slug, typ
 insert into public.menus (id, org_id, handle, items)
 values
   ('80000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000001','header',
-   '[{"label":"Women","href":"/category/women"},{"label":"Men","href":"/category/men"},{"label":"Kids","href":"/category/kids"},{"label":"About us","href":"/about"},{"label":"Contact us","href":"/contact"}]'::jsonb),
+   '[{"label":"Women","href":"/category/women"},{"label":"Men","href":"/category/men"},{"label":"unisex","href":"/category/unisex"},{"label":"About us","href":"/about"},{"label":"Contact us","href":"/contact"}]'::jsonb),
   ('80000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000001','footer',
    '[{"label":"About us","href":"/about"},{"label":"Contact us","href":"/contact"},{"label":"Track order","href":"/track"},{"label":"Delivery information","href":"/checkout"}]'::jsonb)
 on conflict (id) do update set items = excluded.items;

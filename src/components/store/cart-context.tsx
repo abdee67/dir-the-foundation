@@ -5,13 +5,23 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 /** One cart line. Snapshotted at add-to-cart time (name/price/image) — never re-priced client
  * side; placeOrderAction always re-fetches authoritative prices/stock from the DB. */
 export interface CartItem {
+  lineKey?: string
   productId: string
   variantId?: string | null
   name: string
   variantName?: string | null
+  color?: string | null
   unitPrice: number // paisa
   image?: string | null
   qty: number
+  reveal?: {
+    dropId: string
+    purchaseType: 'buy_now' | 'pre_order'
+    fit: string | null
+    color: string | null
+    size: string | null
+    customizationText: string | null
+  }
 }
 
 interface CartContextValue {
@@ -20,8 +30,8 @@ interface CartContextValue {
    * to stay hydration-safe (server always renders an empty cart). */
   mounted: boolean
   add: (item: CartItem) => void
-  remove: (productId: string, variantId?: string | null) => void
-  setQty: (productId: string, variantId: string | null | undefined, qty: number) => void
+  remove: (productId: string, variantId?: string | null, lineKey?: string) => void
+  setQty: (productId: string, variantId: string | null | undefined, qty: number, lineKey?: string) => void
   clear: () => void
   subtotal: number
   count: number
@@ -34,9 +44,10 @@ function cartStorageKey(orgSlug: string): string {
 }
 
 function sameLine(
-  a: { productId: string; variantId?: string | null },
-  b: { productId: string; variantId?: string | null },
+  a: { productId: string; variantId?: string | null; lineKey?: string },
+  b: { productId: string; variantId?: string | null; lineKey?: string },
 ): boolean {
+  if (a.lineKey || b.lineKey) return Boolean(a.lineKey && b.lineKey && a.lineKey === b.lineKey)
   return a.productId === b.productId && (a.variantId ?? null) === (b.variantId ?? null)
 }
 
@@ -81,15 +92,15 @@ export function CartProvider({ orgSlug, children }: { orgSlug: string; children:
       })
     }
 
-    const remove: CartContextValue['remove'] = (productId, variantId) => {
-      setItems((prev) => prev.filter((line) => !sameLine(line, { productId, variantId })))
+    const remove: CartContextValue['remove'] = (productId, variantId, lineKey) => {
+      setItems((prev) => prev.filter((line) => !sameLine(line, { productId, variantId, lineKey })))
     }
 
-    const setQty: CartContextValue['setQty'] = (productId, variantId, qty) => {
+    const setQty: CartContextValue['setQty'] = (productId, variantId, qty, lineKey) => {
       setItems((prev) => {
-        if (qty <= 0) return prev.filter((line) => !sameLine(line, { productId, variantId }))
+        if (qty <= 0) return prev.filter((line) => !sameLine(line, { productId, variantId, lineKey }))
         return prev.map((line) =>
-          sameLine(line, { productId, variantId }) ? { ...line, qty } : line,
+          sameLine(line, { productId, variantId, lineKey }) ? { ...line, qty } : line,
         )
       })
     }

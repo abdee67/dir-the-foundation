@@ -50,7 +50,7 @@ export function toVariantRow(v: ProductVariant): VariantRow {
 
 export function fromVariantRow(row: VariantRow, position: number): VariantInput {
   // Detect if this is a clothing size row (optionsText matches a size label)
-  const SIZES = ['S', 'M', 'L', 'XL', 'XXL']
+  const SIZES = ['XS','S', 'M', 'L', 'XL', 'XXL']
   const sizeKey = SIZES.find((s) => s === row.optionsText.trim().toUpperCase() || s === row.name.trim().toUpperCase())
 
   return {

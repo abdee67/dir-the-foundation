@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -70,6 +70,8 @@ function CheckoutSection({
 export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSettings }) {
   const { orgSlug } = settings
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isRevealFlow = searchParams.get('from') === 'reveal'
   const { items, subtotal, mounted, clear } = useCart()
   const [zoneQuote, setZoneQuote] = useState<DeliveryQuote | null>(null)
   const [zoneLoading, setZoneLoading] = useState(false)
@@ -96,7 +98,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
       orgSlug,
       contact: { name: values.name, phone: values.phone, email: values.email },
       address: { line1: values.line1, area: values.area, district: values.district },
-      items: items.map((item) => ({ productId: item.productId, variantId: item.variantId ?? null, qty: item.qty })),
+      items: items.map((item) => ({ productId: item.productId, variantId: item.variantId ?? null, qty: item.qty, reveal: item.reveal })),
       noteCustomer: values.noteCustomer,
     }
 
@@ -107,7 +109,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
     }
 
     clear()
-    router.push(`/order/${result.data.orderNo}`)
+    router.push(`/order/${result.data.orderNo}${isRevealFlow ? '?from=reveal' : ''}`)
   }
 
   if (!mounted) return <div className="h-96" aria-hidden />
@@ -252,7 +254,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
 
             <ul className="divide-y divide-neutral-300 py-3">
               {items.map((item) => (
-                <li key={`${item.productId}-${item.variantId ?? ''}`} className="flex items-start justify-between gap-4 py-3 text-xs">
+                <li key={item.lineKey ?? `${item.productId}-${item.variantId ?? ''}`} className="flex items-start justify-between gap-4 py-3 text-xs">
                   <span className="min-w-0 leading-5 text-neutral-700">
                     <span className="block truncate font-medium tracking-[0.03em] text-neutral-900">{item.name}</span>
                     <span className="text-neutral-500">
@@ -296,7 +298,7 @@ export function GuestCheckoutForm({ settings }: { settings: GuestCheckoutSetting
             </button>
           </div>
 
-          <Link href="/cart" className="mt-4 inline-flex border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black">
+          <Link href={isRevealFlow ? '/cart?from=reveal' : '/cart'} className="mt-4 inline-flex border-b border-neutral-400 pb-1 text-[10px] font-semibold tracking-[0.14em] uppercase text-neutral-600 transition-colors hover:border-black hover:text-black">
             Return to bag
           </Link>
         </aside>

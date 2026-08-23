@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ShoppingBag } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 import { formatMoney } from '@/lib/money'
 import { CartLineItem } from './cart-line-item'
@@ -10,6 +11,8 @@ import { storePath } from './store-links'
 
 export function CartView({ orgSlug }: { orgSlug: string; lang?: string }) {
   const { items, subtotal, mounted } = useCart()
+  const searchParams = useSearchParams()
+  const isRevealFlow = searchParams.get('from') === 'reveal'
 
   if (!mounted) {
     return <div className="h-64" aria-hidden />
@@ -48,7 +51,7 @@ export function CartView({ orgSlug }: { orgSlug: string; lang?: string }) {
         </div>
         <div className="divide-y divide-neutral-200 border-b border-neutral-200">
           {items.map((item) => (
-            <CartLineItem key={`${item.productId}-${item.variantId ?? ''}`} item={item} />
+            <CartLineItem key={item.lineKey ?? `${item.productId}-${item.variantId ?? ''}`} item={item} />
           ))}
         </div>
       </section>
@@ -77,7 +80,7 @@ export function CartView({ orgSlug }: { orgSlug: string; lang?: string }) {
           </div>
 
           <Link
-            href={storePath(orgSlug, '/checkout')}
+            href={isRevealFlow ? '/checkout?from=reveal' : storePath(orgSlug, '/checkout')}
             className="mt-7 flex h-12 w-full items-center justify-center border border-black bg-black px-4 text-[11px] font-semibold tracking-[0.18em] uppercase text-white transition-colors hover:bg-neutral-800"
           >
             Continue to checkout

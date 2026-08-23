@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 import type { MenuItem } from '@/types/db'
 import { mediaUrl } from '@/lib/media-url'
@@ -19,7 +20,10 @@ export function StoreFooter({
   menuItems: MenuItem[]
   categories: StoreCategory[]
 }) {
+  const searchParams = useSearchParams()
   const logoSrc = org.logo_path ? mediaUrl(org.logo_path) : DEFAULT_BRAND_LOGO_URL
+
+  if (searchParams.get('from') === 'reveal') return null
 
   return (
     <footer className="border-t border-neutral-800 bg-[#101010] text-white">
