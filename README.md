@@ -11,7 +11,7 @@ Built with Next.js 15, TypeScript, Tailwind CSS, and Supabase.
 ### Customer storefront
 
 - Responsive editorial storefront at `/`
-- Women, men, and kids collections
+- Women, men, and unisex collections
 - Product galleries, size variants, live availability, sale and expected-restock messaging
 - Persistent shopping bag and guest checkout
 - Addis Ababa and nationwide delivery-area selection with server-calculated delivery costs
@@ -99,7 +99,7 @@ supabase/migrations/0006_clothing_store_hardening.sql
 Run [supabase/seed.sql](supabase/seed.sql) after all migrations. It creates:
 
 - The `dir-the-foundation` active store
-- Women’s, men’s, and kids’ categories
+- Women’s, men’s, and unisex categories
 - Nine clothing products with size-level inventory
 - Header and footer menus
 - Homepage, About us, and Contact us CMS records
