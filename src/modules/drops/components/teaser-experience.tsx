@@ -3,6 +3,7 @@
 import * as React from 'react'
 import Image from 'next/image'
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
@@ -17,10 +18,14 @@ interface TeaserExperienceProps {
 }
 
 export function TeaserExperience({ dropId, endsAt, heroImage }: TeaserExperienceProps) {
+  const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [phoneNumber, setPhoneNumber] = React.useState('')
   const [message, setMessage] = React.useState<string | null>(null)
   const [submitting, setSubmitting] = React.useState(false)
+  const refreshForNextPhase = React.useCallback(() => {
+    router.refresh()
+  }, [router])
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -49,12 +54,12 @@ export function TeaserExperience({ dropId, endsAt, heroImage }: TeaserExperience
 
       <div className="relative min-h-[100svh] px-5 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))] sm:px-8 sm:pb-12 sm:pt-10">
         <div className="absolute inset-x-5 top-[max(2rem,env(safe-area-inset-top))] text-center sm:inset-x-8 sm:top-10 lg:inset-x-auto lg:left-[7vw] lg:top-1/2 lg:w-[min(22vw,18rem)] lg:-translate-y-1/2 lg:text-left">
-          <TeaserCountdown endsAt={endsAt} />
+          <TeaserCountdown endsAt={endsAt} onComplete={refreshForNextPhase} />
           <p className="mt-5 flex items-center justify-center gap-3 text-[9px] font-medium tracking-[0.3em] uppercase text-white/80 before:h-px before:w-7 before:bg-white/45 after:h-px after:w-7 after:bg-white/45 lg:justify-start">Limited edition</p>
         </div>
 
         <div className="absolute inset-x-5 top-1/2 flex -translate-y-1/2 flex-col items-center text-center lg:inset-x-auto lg:right-[7vw] lg:w-[min(22vw,18rem)]">
-          <p className="font-[family-name:var(--font-primary)] text-[clamp(3rem,13vw,8.5rem)] font-light leading-[.8] tracking-[-0.08em] text-white">DIR <span lang="am" className="ml-[0.1em] font-[family-name:var(--font-bengali)] text-[.65em] tracking-normal">(ድር)</span></p>
+          <p className="font-[family-name:var(--font-primary)] text-[clamp(9rem,20vw,20rem)] font-bold leading-none tracking-[-0.1em] text-white/95 drop-shadow-[0_8px_28px_rgba(0,0,0,0.35)]">DIR </p>
           <p className="mt-5 text-[clamp(.65rem,1.8vw,1rem)] font-light tracking-[0.34em] uppercase text-white/90 sm:mt-7">THE FOUNDATION</p>
         </div>
 

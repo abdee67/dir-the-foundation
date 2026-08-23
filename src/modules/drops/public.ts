@@ -3,6 +3,8 @@ import { cache } from 'react'
 import { mediaUrl } from '@/lib/media-url'
 import { getAdminClient } from '@/lib/supabase/admin'
 
+import { processAutomaticDropTransitions } from './service'
+
 if (typeof window !== 'undefined') {
   throw new Error('src/modules/drops/public.ts must never be imported into client-side code.')
 }
@@ -59,6 +61,18 @@ async function mediaById(orgId: string, ids: string[]) {
 /** Server-authoritative, public-safe active-drop projection. */
 export const resolvePublicDrop = cache(async (orgId: string): Promise<PublicDropResolution> => {
   try {
+    // Cron is the primary scheduler, but a public page load must also recover
+    // immediately if a scheduled invocation was delayed or unavailable.
+    // This remains server-authoritative; browser time never changes a phase.
+    try {
+      await processAutomaticDropTransitions()
+    } catch (transitionError) {
+      // Transition failure must not prevent the page from rendering the current
+      // DB state. The phase may have already been updated by a previous request
+      // or the cron job, so we proceed with whatever the DB currently holds.
+      console.error('[drops:public] automatic transition attempt failed (non-fatal)', transitionError)
+    }
+
     const supabase = getAdminClient()
     const { data: drop, error: dropError } = await supabase
       .from('drops')
@@ -97,7 +111,7 @@ export const resolvePublicDrop = cache(async (orgId: string): Promise<PublicDrop
     if (productError || !product || !mensImage || !womensImage) return { state: 'unavailable' }
 
     const [{ data: variants }, { data: productImages }] = await Promise.all([
-      supabase.from('product_variants').select('id, name, price, compare_at_price, stock_qty, options, is_default').eq('org_id', orgId).eq('product_id', product.id).order('position'),
+      supabase.from('product_variants').select('id, name, price, compare_at_price, stock_qty, options, is_default').eq('org_id', orgId).eq('product_id', product.id).eq('is_active', true).order('position'),
       supabase.from('product_images').select('position, media:media_id(path)').eq('org_id', orgId).eq('product_id', product.id).order('position').limit(1),
     ])
     const imageJoin = (productImages?.[0] as unknown as { media: { path: string } | { path: string }[] | null } | undefined)?.media

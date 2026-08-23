@@ -157,8 +157,9 @@ async function priceCartItems(
   if (variantIds.length > 0) {
     const { data: variantRows, error: variantError } = await supabase
       .from('product_variants')
-      .select('id, product_id, name, price, stock_qty, options')
+      .select('id, product_id, name, price, stock_qty, options, is_active')
       .eq('org_id', orgId)
+      .eq('is_active', true)
       .in('id', variantIds)
     if (variantError || !variantRows) return { ok: false, error: 'Could not load variant prices.' }
     variants = new Map((variantRows as PricedVariantRow[]).map((v) => [v.id, v]))
@@ -176,6 +177,26 @@ async function priceCartItems(
     const variant = item.variantId ? variants.get(item.variantId) : undefined
     if (item.variantId && (!variant || variant.product_id !== item.productId)) {
       return { ok: false, error: 'One of the items in your cart is no longer available.' }
+    }
+
+    // Validate color+size combination if variant has both attributes
+    if (variant) {
+      const opts = variant.options as Record<string, string> | null
+      const hasColor = Boolean(opts?.color)
+      const hasSize = Boolean(opts?.size)
+
+      if (hasColor && hasSize) {
+        // Color+size variant: both must be present and valid
+        const color = opts?.color?.trim()
+        const size = opts?.size?.trim()
+
+        if (!color || !size) {
+          return {
+            ok: false,
+            error: `Invalid variant configuration for ${product.name}. Please refresh and try again.`,
+          }
+        }
+      }
     }
 
     const unitPrice = variant ? variant.price : product.price

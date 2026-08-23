@@ -86,37 +86,6 @@ export async function StorefrontHomePage() {
           <img src={heroImage} alt="" className="absolute inset-0 -z-20 size-full object-cover" />
         ) : null}
         <div className={`absolute inset-0 -z-10 ${heroImage ? 'bg-black/40' : 'bg-black'}`} />
-
-        <h1 aria-label="DIR (ድር) THE FOUNDATION" className="flex w-full max-w-5xl items-baseline justify-between gap-6 px-4 sm:gap-12 sm:px-8">
-          {/* Left: keep the full DIR mark away from the opposing wordmark. */}
-          <span className="flex shrink-0 items-baseline pl-0 text-[clamp(1rem,1.5vw,2.5rem)] font-light leading-none tracking-[0.2em] uppercase sm:pl-6 md:pl-10">
-            {'DIR'.split('').map((char, i) => (
-              <span
-                key={`dir-${i}`}
-                className="sf-hero-wave inline-block"
-                style={{ animationDelay: `${i * 0.12}s` }}
-              >
-                {char}
-              </span>
-            ))}
-            <span lang="am" className="sf-hero-wave ml-[0.55em] inline-block whitespace-nowrap tracking-normal" style={{ animationDelay: '0.42s' }}>
-              (ድር)
-            </span>
-          </span>
-
-          {/* Right: THE FOUNDATION */}
-          <span className="flex items-baseline text-[clamp(0.62rem,1.65vw,1.55rem)] font-light leading-none tracking-[0.2em] uppercase">
-            {'THE FOUNDATION'.split('').map((char, i) => (
-              <span
-                key={`tf-${i}`}
-                className={`sf-hero-wave inline-block ${char === ' ' ? 'w-[0.35em]' : ''}`}
-                style={{ animationDelay: `${0.9 + i * 0.06}s` }}
-              >
-                {char === ' ' ? '\u00A0' : char}
-              </span>
-            ))}
-          </span>
-        </h1>
       </section>
 
       {categorySections.length > 0 && (

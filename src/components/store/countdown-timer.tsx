@@ -28,15 +28,18 @@ export function CountdownTimer({
   label: string
   variant?: CountdownVariant
 }) {
-  const [time, setTime] = useState(() => remaining(targetDate))
+  const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false })
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     const update = () => setTime(remaining(targetDate))
     update()
+    setHydrated(true)
     const id = window.setInterval(update, 1000)
     return () => window.clearInterval(id)
   }, [targetDate])
 
+  if (!hydrated) return null
   if (time.expired) return null
   if (variant === 'compact') {
     return <span className="text-[10px] font-semibold tracking-[0.08em] tabular-nums text-amber-800">{label} {time.days}d {pad(time.hours)}h {pad(time.minutes)}m</span>

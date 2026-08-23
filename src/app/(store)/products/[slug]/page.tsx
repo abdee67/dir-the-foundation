@@ -70,6 +70,7 @@ export default async function ProductPage({ params }: PageProps<{ slug: string }
       .select('*')
       .eq('org_id', org.id)
       .eq('product_id', product.id)
+      .eq('is_active', true)
       .order('position', { ascending: true }),
     supabase
       .from('product_images')

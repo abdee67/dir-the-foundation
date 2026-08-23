@@ -16,16 +16,38 @@ function padded(value: number) {
   return String(value).padStart(2, '0')
 }
 
-export function TeaserCountdown({ endsAt }: { endsAt: string }) {
+export function TeaserCountdown({ endsAt, onComplete }: { endsAt: string; onComplete?: () => void }) {
   // Start with a stable server/client render; update immediately after hydration.
   const [remaining, setRemaining] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  const expiredRef = React.useRef(false)
+  const retryTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   React.useEffect(() => {
-    const update = () => setRemaining(timeRemaining(endsAt))
+    expiredRef.current = false
+    if (retryTimerRef.current) clearInterval(retryTimerRef.current)
+
+    const update = () => {
+      const next = timeRemaining(endsAt)
+      setRemaining(next)
+
+      if (!expiredRef.current && new Date(endsAt).getTime() <= Date.now()) {
+        expiredRef.current = true
+        // Fire immediately, then retry every 3 s until the server transitions
+        // the phase (which unmounts this component with new content).
+        onComplete?.()
+        retryTimerRef.current = setInterval(() => {
+          onComplete?.()
+        }, 3_000)
+      }
+    }
     update()
-    const timer = window.setInterval(update, 1_000)
-    return () => window.clearInterval(timer)
-  }, [endsAt])
+    const tick = window.setInterval(update, 1_000)
+
+    return () => {
+      window.clearInterval(tick)
+      if (retryTimerRef.current) clearInterval(retryTimerRef.current)
+    }
+  }, [endsAt, onComplete])
 
   const items = [
     ['Days', remaining.days],

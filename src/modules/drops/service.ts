@@ -55,7 +55,14 @@ export async function transitionDropPhase({
     .eq('current_phase', drop.current_phase)
     .select('id')
     .maybeSingle()
-  if (error || !updated) throw new Error('The live phase changed elsewhere. Refresh and try again.')
+  if (error || !updated) {
+    // Optimistic lock missed. This usually means a concurrent request (e.g. from the client's retry loop) already advanced it.
+    const { data: current } = await supabase.from('drops').select('current_phase').eq('id', drop.id).maybeSingle()
+    if (current && current.current_phase === toPhase) {
+      return { changed: false, phase: toPhase, needsLaunchNotification: false }
+    }
+    throw new Error('The live phase changed elsewhere. Refresh and try again.')
+  }
 
   const { error: eventError } = await supabase.from('drop_phase_events').insert({
     drop_id: drop.id,

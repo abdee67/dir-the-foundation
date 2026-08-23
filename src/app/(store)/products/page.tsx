@@ -67,6 +67,7 @@ export default async function ProductsPage({
     .from('product_variants')
     .select('product_id, stock_qty, options')
     .eq('org_id', org.id)
+    .eq('is_active', true)
 
   const variantSizes = (variantSizeRows ?? []) as VariantSizeRow[]
   const availableSizes = Array.from(
