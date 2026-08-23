@@ -13,7 +13,7 @@ import type { ProductVariant } from '@/types/db'
 import { type VariantInput } from '../schemas'
 import { type VariantRow } from './variant-editor'
 
-export const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL'] as const
+export const CLOTHING_SIZES = ['XS','S', 'M', 'L', 'XL', 'XXL'] as const
 export type ClothingSize = (typeof CLOTHING_SIZES)[number]
 
 /** Build a size-keyed map from flat VariantRow[], matched by options.size. */
