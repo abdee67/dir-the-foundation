@@ -59,7 +59,7 @@ export function TeaserExperience({ dropId, endsAt, heroImage }: TeaserExperience
         </div>
 
         <div className="absolute inset-x-5 top-1/2 flex -translate-y-1/2 flex-col items-center text-center lg:inset-x-auto lg:right-[7vw] lg:w-[min(22vw,18rem)]">
-          <p className="font-[family-name:var(--font-primary)] text-[clamp(9rem,20vw,20rem)] font-bold leading-none tracking-[-0.1em] text-white/95 drop-shadow-[0_8px_28px_rgba(0,0,0,0.35)]">DIR </p>
+          <p className="hidden lg:block font-[family-name:var(--font-primary)] text-[clamp(9rem,20vw,20rem)] font-bold leading-none tracking-[-0.1em] text-white/95 drop-shadow-[0_8px_28px_rgba(0,0,0,0.35)]">DIR </p>
           <p className="mt-5 text-[clamp(.65rem,1.8vw,1rem)] font-light tracking-[0.34em] uppercase text-white/90 sm:mt-7">THE FOUNDATION</p>
         </div>
 
