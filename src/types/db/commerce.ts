@@ -116,6 +116,7 @@ export interface ProductVariant {
   compare_at_price: number | null
   stock_qty: number
   options: Record<string, unknown>
+  is_active: boolean
   is_default: boolean
   position: number
   created_at: string
