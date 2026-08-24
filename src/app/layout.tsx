@@ -12,6 +12,8 @@ import {
   DEFAULT_BRAND_LOGO_URL,
 } from '@/lib/brand'
 import { NavigationProgress } from '@/components/navigation-progress'
+import { GoogleAnalytics } from "@next/third-parties/google"
+import { Analytics } from '@vercel/analytics/react';
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -95,7 +97,9 @@ export default function RootLayout({
         </Suspense>
         {children}
         <Toaster richColors position="top-right" />
+        <Analytics />
       </body>
+      <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''} />
     </html>
   );
 }
