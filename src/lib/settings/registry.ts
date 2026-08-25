@@ -223,7 +223,7 @@ export const SETTING_DEFS: SettingDef[] = [
     type: 'select',
     options: [
       { value: 'en', label: 'English' },
-      { value: 'am', label: 'Amharic' },
+      { value: 'ET', label: 'Amharic' },
     ],
     default: 'en',
   },

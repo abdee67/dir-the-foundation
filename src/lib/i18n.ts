@@ -1,4 +1,4 @@
-// Tiny storefront i18n dict (en/am). Admin stays English per conventions.md.
+// Tiny storefront i18n dict (en/ET). Admin stays English per conventions.md.
 // Bengali rendering: pair with the `.text-bengali` class on the rendered element.
 
 export type Lang = 'en' | 'ET'

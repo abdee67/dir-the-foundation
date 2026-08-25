@@ -82,7 +82,7 @@ export function ProductPurchasePanel({
       image,
       qty,
     })
-    toast.success(lang === 'am' ? 'ወደ ጋሪ ታክሏል' : 'Added to shopping bag')
+    toast.success(lang === 'ET' ? 'ወደ ጋሪ ታክሏል' : 'Added to shopping bag')
   }
 
   return (
