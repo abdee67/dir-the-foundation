@@ -1,0 +1,5 @@
+1.supabase start
+supabase db pull
+supabase status  --to get the local testing credintials and swap the current credintialsin env.local with it
+supabase db push
+for the afromessage i will use the same credintials with the production, cause i dont have any other alt(just chage the phone numbers)
