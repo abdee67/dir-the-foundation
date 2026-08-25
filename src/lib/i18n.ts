@@ -1,7 +1,7 @@
 // Tiny storefront i18n dict (en/am). Admin stays English per conventions.md.
 // Bengali rendering: pair with the `.text-bengali` class on the rendered element.
 
-export type Lang = 'en' | 'am'
+export type Lang = 'en' | 'ET'
 
 export type StringKey =
   | 'add_to_cart'
@@ -39,39 +39,39 @@ export type StringKey =
   | 'failed'
   | 'returned'
 
-export const STRINGS: Record<StringKey, { en: string; am: string }> = {
-  add_to_cart: { en: 'Add to cart', am: 'কার্টে যোগ করুন' },
-  checkout: { en: 'Checkout', am: 'চেকআউট' },
-  place_order: { en: 'Place order', am: 'অর্ডার করুন' },
-  your_cart: { en: 'Your cart', am: 'আপনার কার্ট' },
-  cart_empty: { en: 'Your cart is empty', am: 'আপনার কার্ট খালি' },
-  subtotal: { en: 'Subtotal', am: 'সাবটোটাল' },
-  delivery_charge: { en: 'Delivery charge', am: 'ডেলিভারি চার্জ' },
-  total: { en: 'Total', am: 'সর্বমোট' },
-  advance_payable: { en: 'Advance payable', am: 'অগ্রিম পরিশোধযোগ্য' },
-  cash_on_delivery: { en: 'Cash on delivery', am: 'ক্যাশ অন ডেলিভারি' },
-  phone: { en: 'Phone number', am: 'ফোন নম্বর' },
-  name: { en: 'Name', am: 'নাম' },
-  address: { en: 'Address', am: 'ঠিকানা' },
-  district: { en: 'District', am: 'জেলা' },
-  track_order: { en: 'Track order', am: 'অর্ডার ট্র্যাক করুন' },
-  order_placed: { en: 'Order placed', am: 'অর্ডার সম্পন্ন হয়েছে' },
-  continue_shopping: { en: 'Continue shopping', am: 'কেনাকাটা চালিয়ে যান' },
-  search: { en: 'Search', am: 'খুঁজুন' },
-  all_products: { en: 'All products', am: 'সকল পণ্য' },
-  out_of_stock: { en: 'Out of stock', am: 'স্টক নেই' },
-  quantity: { en: 'Quantity', am: 'পরিমাণ' },
-  remove: { en: 'Remove', am: 'সরান' },
-  payment_method: { en: 'Payment method', am: 'পেমেন্ট পদ্ধতি' },
-  send_money_instructions: { en: 'Send money instructions', am: 'টাকা পাঠানোর নির্দেশনা' },
-  transaction_id: { en: 'Transaction ID', am: 'ট্রানজেকশন আইডি' },
-  pending: { en: 'Pending', am: 'অপেক্ষমাণ' },
-  assigned: { en: 'Assigned', am: 'বরাদ্দকৃত' },
-  picked_up: { en: 'Picked Up', am: 'সংগৃহীত' },
-  in_transit: { en: 'In Transit', am: 'পথে আছে' },
-  delivered: { en: 'Delivered', am: 'ডেলিভারি সম্পন্ন' },
-  failed: { en: 'Failed', am: 'ব্যর্থ' },
-  returned: { en: 'Returned', am: 'ফেরত' },
+export const STRINGS: Record<StringKey, { en: string; ET: string }> = {
+  add_to_cart: { en: 'Add to cart', ET: 'ቅርጫት ውስጥ ይጨምሩ' },
+  checkout: { en: 'Checkout', ET: 'ውጣ' },
+  place_order: { en: 'Place order', ET: 'ትዕዛዙን አስቀምጥ' },
+  your_cart: { en: 'Your cart', ET: 'የእርስዎ ቅርጫት' },
+  cart_empty: { en: 'Your cart is empty', ET: 'የለም' },
+  subtotal: { en: 'Subtotal', ET: 'ጠቅላላ' },
+  delivery_charge: { en: 'Delivery charge', ET: 'የመላክ ክፍያ' },
+  total: { en: 'Total', ET: 'ጠቅላላ ክፍያ' },
+  advance_payable: { en: 'Advance payable', ET: 'የመጀመሪያ ክፍያ' },
+  cash_on_delivery: { en: 'Cash on delivery', ET: 'የገንዘብ ክፍያ በቦታው ' },
+  phone: { en: 'Phone number', ET: 'ስልክ ቁጥር' },
+  name: { en: 'Name', ET: 'ስም' },
+  address: { en: 'Address', ET: 'አድራሻ' },
+  district: { en: 'District', ET: 'ክፍለ ከተማ' },
+  track_order: { en: 'Track order', ET: 'ትዕዛዙን ይከታተሉ' },
+  order_placed: { en: 'Order placed', ET: 'ትዕዛዙ ተቀምጧል' },
+  continue_shopping: { en: 'Continue shopping', ET: 'መገበያየት ቀጥል' },
+  search: { en: 'Search', ET: 'ፈልግ' },
+  all_products: { en: 'All products', ET: 'ሁሉም ምርቶች' },
+  out_of_stock: { en: 'Out of stock', ET: 'የለም' },
+  quantity: { en: 'Quantity', ET: 'ብዛት' },
+  remove: { en: 'Remove', ET: 'አስወግድ' },
+  payment_method: { en: 'Payment method', ET: 'የክፍያ ዘዴ' },
+  send_money_instructions: { en: 'Send money instructions', ET: 'ገንዘብ የመላክ መመሪያዎች' },
+  transaction_id: { en: 'Transaction ID', ET: 'የግብይት መለያ ቁጥር' },
+  pending: { en: 'Pending', ET: 'በመጠባበቅ ላይ' },
+  assigned: { en: 'Assigned', ET: 'ተመድቧል' },
+  picked_up: { en: 'Picked Up', ET: 'ተሰብስቦል' },
+  in_transit: { en: 'In Transit', ET: 'በመንገድ ላይ' },
+  delivered: { en: 'Delivered', ET: 'ተረክቧል' },
+  failed: { en: 'Failed', ET: 'አልተሳካም' },
+  returned: { en: 'Returned', ET: 'ተመልሷል' },
 }
 
 export function t(key: StringKey, lang: Lang = 'en'): string {

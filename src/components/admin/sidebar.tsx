@@ -90,9 +90,9 @@ export function Sidebar({ org, orgs, nav, collapsed = false, onNavigate, onToggl
         )}
       </div>
 
-      <div className="border-b border-sidebar-border p-2">
+      {/*  <div className="border-b border-sidebar-border p-2">
         <OrgSwitcher orgs={orgs} activeOrgId={org.id} activeOrgName={org.name} collapsed={collapsed} />
-      </div>
+      </div>*/}
 
       <nav className="flex-1 overflow-y-auto px-3 py-5">
         {dashboard && (
